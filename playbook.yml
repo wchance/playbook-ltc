@@ -1,0 +1,64 @@
+- name: secure server
+  hosts: # put here hosts name
+  gather_facts: false
+  tasks:
+          - name: update & upgrade
+            apt:
+                    update_cache: yes
+                    name: fail2ban
+                    state: present
+
+          - name: create jail.local
+            shell: "cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local"
+
+          - name: adjust fail2ban
+            shell:
+                    cmd: |
+                            cat >> /etc/fail2ban/jail.local <<EOF
+                            [sshd]
+                            logpath = %(sshd_log)s
+                            backend = %(sshd_backend)s
+                            enabled = true
+                            port = 30022
+                            EOF
+
+          - name: add user
+            user:
+                    name: wchance
+                    shell: /bin/bash
+                    create_home: yes
+                    group: sudo
+                    state: present
+                    password: $6$hpFjajcvS5iwbySm$YY1HWJEgrl/2tqgDkJA1oSbS7KxqwAlNbbDUpgcmGtsKb0gnvgrH3KkyIGnzMZj61qGLMwga/Wnf4QAdsOdoU0
+
+          - name: paste pubkeys
+            shell:
+                    cmd: |
+                            cat >> /home/wchance/.ssh/authorized_keys <<EOF
+                            ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDLmXMMwwGrsoEwKEd3f5GfaHYXDHyDEVevM3B6YiLElQ9zl57cattHMf8BRZ1Jnz3ELB3b2FdqjMSdALrQI/ovqdHOSV27Gzwllem8pRgam4gmjkC8yby+jEE3lO/OD3oL7fOFV4v01MmxY4jvjXMcQfvFsKFoF28e4Xf8HGfopKenZS/W+nQyy0EDg1lnWvaRAzNwxyyd1glSbsAYYbdf7gC5ipYb/n0uuKmEKwo5KIeZ5LjkOhpnib2npodkjWyxiyuTy/q80pjHRVbK8qmEj9traS+M9n5IzX1L55JbelzGeXQCV2LvrP+ZRCA0urdZoG7jXk3yXBcEmPFJL1tAkmQr/gQ+2EXnNQ9yCAUzChMKY7UIjbxgMmrM2yjj3Lsh+ybo1PevJYbzNRIk+jrzjDkJGKOo52rqFj54LlOPvIOH6LLtGkofvtiHtooKqqGQIjqD94x4BtM/KX7mabV0eAxOGVPYI8z5QyUL0+U+hSxQQ+d5yz/QtxR89H/AeQFsOA5K6wdgKaNgzOVzqr+zdszHJKg1lb1QJMvfZ5P8aPcl3vVJBUQjeT2e9atrZXMIXjPfCYEuIMMJpjjJ0KI4kFA/ZWZxmW8YqAUw8eqp3+8Hs0rxBHG6KhcZA4kzaI4qQCrYWsB/dUdwuO6tctE1Yv54vYWVGb4QY0Ybe9ENrQ== wchance@ada-prod-node
+                            EOF
+
+          - name: copy
+            copy:
+                    src: sshd_config # path from where to copy sshd_config to the server
+                    dest: /etc/ssh/sshd_config
+                    owner: root
+                    group: root
+                    mode: '0644'
+
+          - name: copy
+            copy:
+                    src: sshd-banner # path from where to copy sshd_banner to the server
+                    dest: /etc/ssh/sshd-banner
+                    owner: root
+                    group: root
+                    mode: '0644'
+
+          - name: restart
+            service:
+                    name: "{{ item }}"
+                    enabled: yes
+                    state: restarted
+            loop:
+                    - fail2ban
+                    - sshd
