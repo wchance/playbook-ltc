@@ -1,0 +1,16 @@
+[Unit]
+Description=Geth Node
+After=network.target auditd.service
+Wants=network.target
+
+[Service]
+WorkingDirectory={{ data_path }}
+ExecStart=/usr/bin/geth --syncmode full --datadir {{ data_path }} --cache 512 --nat none --port 38336 --ws --ws.port 8546 --ws.origins * --http --http.port 8545 --http.corsdomain * --http.vhosts * --ws.addr 127.0.0.1  --http.addr 127.0.0.1 --maxpeers 32 --http.api="eth,net,web3,personal"
+User=root
+Group=root
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+Alias=geth.service

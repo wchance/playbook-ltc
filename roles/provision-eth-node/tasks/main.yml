@@ -1,0 +1,34 @@
+---
+
+- name: Install Geth
+  include_tasks: 
+    file: install-geth.yml
+    apply:
+      tags: 
+        - never
+        - install-geth
+  tags:
+    - never 
+    - install-geth
+
+- name: Upgrade Geth
+  include_tasks:
+    file: upgrade-geth.yml
+    apply:
+      tags:
+        - never 
+        - upgrade-geth
+  tags:
+    - never 
+    - upgrade-geth
+
+- name: Install Cronjobs
+  include_tasks:
+    file: install-cronjobs.yml
+    apply:
+      tags:
+        - never 
+        - install-cronjobs
+  tags:
+    - never 
+    - install-cronjobs

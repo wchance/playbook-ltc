@@ -1,0 +1,63 @@
+---
+
+- name: Check geth binary
+  ansible.builtin.stat:
+    path: /usr/bin/geth
+  register: geth_binary_file
+
+- name: Stop geth service
+  ansible.builtin.systemd:
+    state: stopped
+    name: geth.service
+  when: geth_binary_file.stat.exists
+
+- name: Remove existing geth binary
+  ansible.builtin.file:
+    path: /usr/bin/geth
+    state: absent
+
+- name: Download geth binary
+  get_url:
+    url: https://gethstore.blob.core.windows.net/builds/{{ geth_binary_version }}.tar.gz
+    dest: /tmp/
+    checksum: "{{ geth_binary_checksum }}"
+
+- name: Uncompress tar.gz file
+  ansible.builtin.unarchive:
+    src: /tmp/{{ geth_binary_version }}.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Move geth binary
+  ansible.builtin.copy:
+    src: /tmp/{{ geth_binary_version }}/geth
+    dest: /usr/bin/geth
+    owner: root
+    group: root
+
+- name: Make geth binary executable
+  ansible.builtin.file:
+    path: /usr/bin/geth
+    mode: 0777
+
+- name: Cleanup downloaded files
+  ansible.builtin.file:
+    path: /tmp/{{ geth_binary_version }}.tar.gz
+    state: absent
+
+- name: Cleanup uncompressed files
+  ansible.builtin.file:
+    path: /tmp/{{ geth_binary_version }}
+    state: absent
+
+- name: Check geth service (systemd)
+  ansible.builtin.stat:
+    path: /etc/systemd/system/multi-user.target.wants/geth.service
+  register: geth_systemd_file
+
+- name: Run geth service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: geth.service
+  when: geth_systemd_file.stat.exists

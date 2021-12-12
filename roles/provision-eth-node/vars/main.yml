@@ -1,0 +1,3 @@
+geth_binary_version: 'geth-linux-amd64-1.10.12-6c4dc6c3'
+geth_binary_checksum: 'md5:51b5efdd8f76ced8e2d2152188b652dd'
+data_path: '/home/{{ ansible_user }}/.ethereum'

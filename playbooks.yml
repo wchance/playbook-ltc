@@ -1,0 +1,8 @@
+---
+
+- name: Playbooks
+  hosts: all
+  become: true
+  roles:
+    - role: provision-eth-node 
+

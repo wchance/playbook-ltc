@@ -1,0 +1,8 @@
+---
+
+- name: Sample Cron
+  ansible.builtin.cron:
+    name: "check dirs"
+    minute: "0"
+    hour: "5,2"
+    job: "ls -alh > /dev/null"

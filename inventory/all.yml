@@ -1,0 +1,17 @@
+---
+
+all:
+  children:
+    mylocalhost:
+      hosts:
+        localhost:
+          ansible_connection: local
+    eth-nodes:
+      hosts:
+        eth-node-01:
+          ansible_host: 192.168.254.101
+          ansible_user: beta
+          ansible_connection: ssh
+  vars:
+  ansible_become: yes 
+  ansible_become_method: sudo
