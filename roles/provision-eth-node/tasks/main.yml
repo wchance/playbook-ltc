@@ -28,7 +28,8 @@
     apply:
       tags:
         - never 
-        - install-cronjobs
+        - install-eth-node-cronjobs
   tags:
     - never 
     - install-cronjobs
+    - install-eth-node-cronjobs

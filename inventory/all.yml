@@ -8,10 +8,11 @@ all:
           ansible_connection: local
     eth-nodes:
       hosts:
-        eth-node-01:
-          ansible_host: 192.168.254.101
-          ansible_user: beta
+        mia-node-01:
+          ansible_host: 199.245.60.181
           ansible_connection: ssh
+          ansible_port: 30022
   vars:
+  ansible_user: 
   ansible_become: yes 
   ansible_become_method: sudo
