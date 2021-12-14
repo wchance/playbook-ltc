@@ -24,6 +24,7 @@
     dest: /usr/bin/geth
     owner: root
     group: root
+    remote_src: yes
 
 - name: Make geth binary executable
   ansible.builtin.file:
