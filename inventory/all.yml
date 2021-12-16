@@ -11,51 +11,51 @@ all:
         mia-eth-node:
           ansible_host: 10.0.41.5
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         mia-bsc-node:
           ansible_host: 10.0.41.6
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         mia-matic-node:
           ansible_host: 10.0.41.7
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         mia-btc-node:
           ansible_host: 10.0.41.20
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         mia-ltc-node:
           ansible_host: 10.0.41.21
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         mia-bch-node:
           ansible_host: 10.0.41.22
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         sjo-eth-node:
           ansible_host: 10.1.41.5
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         sjo-bsc-node:
           ansible_host: 10.1.41.6
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         sjo-matic-node:
           ansible_host: 10.1.41.7
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         sjo-btc-node:
           ansible_host: 10.1.41.20
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         sjo-ltc-node:
           ansible_host: 10.1.41.21
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
         sjo-bch-node:
           ansible_host: 10.1.41.22
           ansible_connection: ssh
-          ansible_port: 30022
+          ansible_port: 22
   vars:
   ansible_user: wchance
   ansible_become: yes 
