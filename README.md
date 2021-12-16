@@ -31,6 +31,8 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 # Polygon Node
 
+The role [provision-matic-node](./roles/provision-matic-node) is the one responsible for provisioning/configuring Polygoin Nodes. This role has been tested in Ubuntu LTS-18 and LTS-20.
+
 - Installing Dependency
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency" --private-key <path-to-key> -kK -vvv

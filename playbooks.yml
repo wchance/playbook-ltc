@@ -5,4 +5,4 @@
   become: true
   roles:
     - role: provision-eth-node
-    - role: provision-maticx-node
+    - role: provision-matic-node

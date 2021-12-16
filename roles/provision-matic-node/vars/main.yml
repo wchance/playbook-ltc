@@ -1,6 +1,12 @@
-golang_binary_version: go1.17.5.linux-amd64
+golang_version: 1.17
 rpc_endpoint_url: 
 polygon_node_name: 
-heimdall_release_version: v0.2.4
-bor_release_version: v0.2.12
-heimdall_network: mainnet-v1
+######
+root_dir: /home/{{ ansible_user }}
+heimdall_branch: master
+heimdall_network: mainnet
+bor_branch: master
+network_launch_repository: github.com/maticnetwork/launch
+network_launch_branch: master
+network_version: mainnet-v1
+node_type: sentry/sentry

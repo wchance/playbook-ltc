@@ -35,36 +35,26 @@
   register: golang_binary_file
 
 - name: Install golang
-  get_url:
-    url: https://go.dev/dl/{{ golang_binary_version }}.tar.gz
-    dest: /tmp/
-  when: not golang_binary_file.stat.exists
-
-- name: Uncompress tar.gz file
-  ansible.builtin.unarchive:
-    src: /tmp/{{ golang_binary_version }}.tar.gz
-    dest: /tmp/
-    remote_src: yes
-  when: not golang_binary_file.stat.exists
-
-- name: Move golang binary
-  ansible.builtin.copy:
-    src: /tmp/go
-    dest: /usr/local/
+  ansible.builtin.template:
+    src: go-installer.j2
+    dest: /tmp/go-installer.sh
     owner: root
     group: root
-    remote_src: yes
+    remote_src: no
   when: not golang_binary_file.stat.exists
 
-- name: Add the PATH for golang (root)
-  shell: |
-    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile 
-    . ~/.bashrc
+- name: Make script executable
+  ansible.builtin.file:
+    path: /tmp/go-install.sh
+    mode: 0777
   when: not golang_binary_file.stat.exists
 
-- name: Add the PATH for golang - {{ ansible_user }}
-  become: no
-  shell: |
-    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile 
-    . ~/.bashrc
+- name: Run command
+  ansible.builtin.command: /tmp/go-install.sh
+  become: true
+  when: not golang_binary_file.stat.exists
+
+- name: Create symlink
+  ansible.builtin.command: ln -nfs ~/.go/bin/go /usr/bin/go
+  become: true
   when: not golang_binary_file.stat.exists

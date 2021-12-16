@@ -1,210 +1,164 @@
 ---
 
-- name: Git clone heimdall
-  ansible.builtin.git:
-    repo: https://github.com/maticnetwork/heimdall.git
-    dest: /home/{{ ansible_user }}/.heimdall
-    version: "{{ heimdall_release_version }}"
+# tasks file for heimdall
+- name: Clone the Heimdall
+  git:
+    repo: "https://github.com/maticnetwork/heimdall.git"
+    dest: "{{ root_dir }}/heimdall"
     force: yes
+    version: "{{ heimdall_branch }}"
 
-- name: Build from source (heimdall)
-  command: chdir=/home/{{ ansible_user }}/.heimdall make install network={{ heimdall_network }}
-  environment:
-    PATH: /sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin
+- name: Build heimdall
+  command: chdir={{ root_dir }}/heimdall make install network={{ heimdall_network }}
+
+- name: Creating symlink for heimdalld
+  file:
+    src: "{{ root_dir }}/go/bin/heimdalld"
+    dest: "/usr/bin/heimdalld"
+    state: link
   become: true
 
-- name: Confirm heimdall build
-  shell: /home/{{ ansible_user }}/.heimdall/heimdalld version
-
-- name: Creating symlink for heimdalld
+- name: Creating symlink for heimdallcli
   file:
-    src: /home/{{ ansible_user }}/.heimdall/go/bin/heimdalld
-    dest: /usr/bin/heimdalld
+    src: "{{ root_dir }}/go/bin/heimdallcli"
+    dest: "/usr/bin/heimdallcli"
     state: link
+  become: true
 
-- name: Creating symlink for heimdalld
+- name: Creating symlink for bridge
   file:
-    src: /home/{{ ansible_user }}/.heimdall/go/bin/heimdallcli
-    dest: /usr/bin/heimdallcli
+    src: "{{ root_dir }}/go/bin/bridge"
+    dest: "/usr/bin/bridge"
     state: link
+  become: true
 
-- name: Creating symlink for heimdalld
-  file:
-    src: /home/{{ ansible_user }}/.heimdall/go/bin/bridge
-    dest: /usr/bin/bridge
-    state: link
-
-- name: Git clone bor
-  ansible.builtin.git:
-    repo: https://github.com/maticnetwork/bor.git
-    dest: /home/{{ ansible_user }}/.bor
-    version: "{{ bor_release_version }}"
+# tasks file for bor
+- name: Cloning the Bor
+  git:
+    repo: "https://github.com/maticnetwork/bor.git"
+    dest: "{{ root_dir }}/bor"
     force: yes
+    version: "{{ bor_branch }}"
 
-- name: Build from source (bor)
-  command: chdir=/home/{{ ansible_user }}/.bor make bor-all
-  environment:
-    PATH: /sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin
-
-- name: Confirm bor build
-  shell: /home/{{ ansible_user }}/.bor/bor version
+- name: Build Bor
+  command: chdir={{ root_dir }}/bor make bor-all
 
 - name: Creating symlink for bor
   file:
-    src: /home/{{ ansible_user }}/.bor/build/bin/bor
-    dest: /usr/bin/bor
+    src: "{{ root_dir }}/bor/build/bin/bor"
+    dest: "/usr/bin/bor"
     state: link
+  become: true
 
 - name: Creating symlink for bootnode
   file:
-    src: /home/{{ ansible_user }}/.bor/build/bin/bootnode
-    dest: /usr/bin/bootnode
+    src: "{{ root_dir }}/bor/build/bin/bootnode"
+    dest: "/usr/bin/bootnode"
     state: link
+  become: true
 
-- name: Create data folder (heimdall)
-  ansible.builtin.file:
-    path: /home/{{ ansible_user }}/.heimdall_data
-    state: directory
-    owner: root
-    group: root
+# Tasks to clean current setup
+- name: Check if data directories exist
+  stat:
+    path: "{{ root_dir }}/.heimdalld"
+  register: dir_to_check
 
-- name: Initialize data folder
-  shell: heimdalld init --home /home/{{ ansible_user }}/.heimdall_data
+- name: Add fail mechanism
+  fail:
+    msg: "Data directories already exist. To start fresh, use matic-cleaner.yml first and then execute setup again."
+  failed_when: dir_to_check.stat.exists and dir_to_check.stat.isdir
 
-- name: Download genesis file (heimdall)
-  get_url:
-    url: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/sentry/sentry/heimdall/config/genesis.json
-    dest: /tmp/
+# Tasks to setup network
+- name: Fetch node files
+  git:
+    repo: "https://{{ network_launch_repository }}.git"
+    dest: "{{ root_dir }}/launch"
+    recursive: false
+    version: "{{ network_launch_branch }}"
 
-- name: Move genesis file
-  ansible.builtin.copy:
-    src: /tmp/genesis.json
-    dest: /home/{{ ansible_user }}/.heimdall_data/config/genesis.json
-    owner: root
-    group: root
-    remote_src: yes
+- name: Setup node directory
+  command: cp -rf {{ root_dir }}/launch/{{ network_version }}/{{ node_type }} {{ root_dir }}/node
 
-- name: Remove genesis file (heimdall)
-  ansible.builtin.file:
-    path: /tmp/genesis.json
-    state: absent
-    owner: root
-    group: root
+- name: Setup Heidmall
+  command: "chdir={{ root_dir }}/node/heimdall {{ item }}"
+  with_items:
+    - bash setup.sh
+  tags:
+    - heimdall
 
-- name: Modify config file
-  shell: |
-    sed -i '/moniker/c\moniker = "{{ polygon_node_name }}"' /home/{{ ansible_user }}/.heimdall_dataconfig/config.toml
-    sed -i '/seeds/c\seeds = "f4f605d60b8ffaaf15240564e58a81103510631c@159.203.9.164:26656,4fb1bc820088764a564d4f66bba1963d47d82329@44.232.55.71:26656"' /home/{{ ansible_user }}/.heimdall_data/config/config.toml
-    sed -i '/eth_rpc_url/c\eth_rpc_url = "{{ rpc_endpoint_url }}"' /home/{{ ansible_user }}/.heimdall_data/config/config.toml
+- name: Setup Bor
+  command: "chdir={{ root_dir }}/node/bor {{ item }}"
+  with_items:
+    - bash setup.sh
+  tags:
+    - bor
 
-- name: Create data folder (bor)
-  ansible.builtin.file:
-    path: /home/{{ ansible_user }}/.bor_data
-    state: directory
-    owner: root
-    group: root
+- name: Generate service files
+  command: "chdir={{ root_dir }}/launch/{{ network_version }} {{ item }}"
+  with_items:
+    - bash service.sh
 
-- name: Create data folder (bor_data)
-  ansible.builtin.file:
-    path: /home/{{ ansible_user }}/.bor_data/data
-    state: directory
-    owner: root
-    group: root
-
-- name: Download genesis file (heimdall)
-  get_url:
-    url: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/sentry/sentry/heimdall/config/genesis.json
-    dest: /tmp/
-
-- name: Move genesis file
-  ansible.builtin.copy:
-    src: /tmp/genesis.json
-    dest: /home/{{ ansible_user }}/.bor_data/genesis.json
-    owner: root
-    group: root
-    remote_src: yes
-
-- name: Initialize data folder
-  shell: bor --datadir $HOME/bor_data/data init genesis.json
-
-- name: Download and replace genesis file
-  shell: cp -rf /tmp/launch/mainnet-v1/sentry/sentry/bor/genesis.json /home/{{ ansible_user }}/.bor_data/genesis.json
-
-- name: Prepare start_bor.sh
-  ansible.builtin.template:
-    src: start-bor.j2
-    dest: /home/{{ ansible_user }}/start-bor.sh
-    owner: root
-    group: root
-    remote_src: no
-
-- name: Make geth binary executable
-  ansible.builtin.file:
-    path: /home/{{ ansible_user }}/start-bor.sh
-    mode: 0777
-
-- name: Configure systemd heimdall.service
-  ansible.builtin.template:
-    src: heimdall-systemd-config.j2
+# Tasks to setup services
+- name: Setup Heimdall service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld.service"
     dest: /etc/systemd/system/heimdalld.service
-    owner: root
-    group: root
-    remote_src: no
+    mode: "0755"
+    remote_src: true
+  notify: reload heimdalld
+  become: true
+  tags:
+    - heimdall
 
-- name: Configure systemd (symlink)
-  ansible.builtin.file:
-    src: /etc/systemd/system/heimdalld.service
-    dest: /etc/systemd/system/multi-user.target.wants/heimdalld.service
-    owner: root
-    group: root
-    state: link
-
-- name: Configure systemd heimdalld-rest-server.service
-  ansible.builtin.template:
-    src: heimdallRest-systemd-config.j2
+- name: Setup Heimdall rest service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld-rest-server.service"
     dest: /etc/systemd/system/heimdalld-rest-server.service
-    owner: root
-    group: root
-    remote_src: no
+    mode: "0755"
+    remote_src: true
+  notify: reload heimdalld-rest-server
+  become: true
+  tags:
+    - heimdall
 
-- name: Configure systemd (symlink)
-  ansible.builtin.file:
-    src: /etc/systemd/system/heimdalld-rest-server.service
-    dest: /etc/systemd/system/multi-user.target.wants/heimdalld-rest-server.service
-    owner: root
-    group: root
-    state: link
+- name: Setup Heimdall bridge service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld-bridge.service"
+    dest: /etc/systemd/system/heimdalld-bridge.service
+    mode: "0755"
+    remote_src: true
+  notify: reload heimdalld-bridge
+  become: true
+  tags:
+    - heimdall
 
-- name: Configure systemd bor.service
-  ansible.builtin.template:
-    src: bor-systemd-config.j2
+- name: Setup Bor service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/bor.service"
     dest: /etc/systemd/system/bor.service
-    owner: root
-    group: root
-    remote_src: no
+    mode: "0755"
+    remote_src: true
+  notify: reload bor
+  become: true
+  tags:
+    - bor
 
-- name: Configure systemd (symlink)
-  ansible.builtin.file:
-    src: /etc/systemd/system/bor.service
-    dest: /etc/systemd/system/multi-user.target.wants/bor.service
-    owner: root
-    group: root
-    state: link
+- name: Create /etc/matic directory
+  file:
+    path: /etc/matic
+    state: directory
+  become: true
 
-- name: Run heimdall service
-  ansible.builtin.systemd:
-    state: restarted
-    daemon_reload: yes
-    name: heimdalld.service
+- name: Check if metadata exists
+  stat:
+    path: /etc/matic/metadata
+  register: metadata_to_check
 
-- name: Run heimdall service
-  ansible.builtin.systemd:
-    state: restarted
-    daemon_reload: yes
-    name: heimdalld-rest-server.service
-
-- name: Run heimdall service
-  ansible.builtin.systemd:
-    state: restarted
-    daemon_reload: yes
-    name: bor.service
+- name: Setup metadata file
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/metadata"
+    dest: /etc/matic/metadata
+    mode: "0755"
+    remote_src: true
+  become: true
+  when: metadata_to_check.stat.exists == False
