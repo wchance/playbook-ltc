@@ -1,0 +1,70 @@
+---
+
+- name: Install update
+  apt:
+    update_cache: yes
+
+- name: Install Wget
+  apt: 
+    name: wget
+    state: present
+
+- name: Install build-essential
+  apt:
+    name: build-essential
+    state: present
+
+- name: Install make
+  apt:
+    name: make
+    state: present
+
+- name: Install gcc
+  apt:
+    name: gcc
+    state: present
+
+- name: Install git
+  apt:
+    name: git
+    state: present
+
+- name: Check golang binary
+  ansible.builtin.stat:
+    path: /usr/local/go
+  register: golang_binary_file
+
+- name: Install golang
+  get_url:
+    url: https://go.dev/dl/{{ golang_binary_version }}.tar.gz
+    dest: /tmp/
+  when: not golang_binary_file.stat.exists
+
+- name: Uncompress tar.gz file
+  ansible.builtin.unarchive:
+    src: /tmp/{{ golang_binary_version }}.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  when: not golang_binary_file.stat.exists
+
+- name: Move golang binary
+  ansible.builtin.copy:
+    src: /tmp/go
+    dest: /usr/local/
+    owner: root
+    group: root
+    remote_src: yes
+  when: not golang_binary_file.stat.exists
+
+- name: Add the PATH for golang (root)
+  shell: |
+    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile 
+    . ~/.bashrc
+  when: not golang_binary_file.stat.exists
+
+- name: Add the PATH for golang - {{ ansible_user }}
+  become: no
+  shell: |
+    echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile 
+    . ~/.bashrc
+  when: not golang_binary_file.stat.exists

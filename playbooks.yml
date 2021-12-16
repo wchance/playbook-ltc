@@ -4,5 +4,5 @@
   hosts: all
   become: true
   roles:
-    - role: provision-eth-node 
-
+    - role: provision-eth-node
+    - role: provision-maticx-node

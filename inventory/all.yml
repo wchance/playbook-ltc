@@ -55,6 +55,12 @@ all:
         sjo-bch-node:
           ansible_host: 10.1.41.22
           ansible_connection: ssh
+          ansible_port: 30022
+    matic-nodes:
+      hosts:
+        mia-matic-node1:
+          ansible_host: 192.168.254.102
+          ansible_connection: ssh
           ansible_port: 22
   vars:
   ansible_user: wchance

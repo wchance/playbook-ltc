@@ -1,0 +1,6 @@
+golang_binary_version: go1.17.5.linux-amd64
+rpc_endpoint_url: 
+polygon_node_name: 
+heimdall_release_version: v0.2.4
+bor_release_version: v0.2.12
+heimdall_network: mainnet-v1

@@ -1,0 +1,164 @@
+---
+
+# tasks file for heimdall
+- name: Clone the Heimdall
+  git:
+    repo: "https://github.com/maticnetwork/heimdall.git"
+    dest: "{{ root_dir }}/heimdall"
+    force: yes
+    version: "{{ heimdall_branch }}"
+
+- name: Build heimdall
+  command: chdir={{ root_dir }}/heimdall make install network={{ heimdall_network }}
+
+- name: Creating symlink for heimdalld
+  file:
+    src: "{{ root_dir }}/go/bin/heimdalld"
+    dest: "/usr/bin/heimdalld"
+    state: link
+  become: true
+
+- name: Creating symlink for heimdallcli
+  file:
+    src: "{{ root_dir }}/go/bin/heimdallcli"
+    dest: "/usr/bin/heimdallcli"
+    state: link
+  become: true
+
+- name: Creating symlink for bridge
+  file:
+    src: "{{ root_dir }}/go/bin/bridge"
+    dest: "/usr/bin/bridge"
+    state: link
+  become: true
+
+# tasks file for bor
+- name: Cloning the Bor
+  git:
+    repo: "https://github.com/maticnetwork/bor.git"
+    dest: "{{ root_dir }}/bor"
+    force: yes
+    version: "{{ bor_branch }}"
+
+- name: Build Bor
+  command: chdir={{ root_dir }}/bor make bor-all
+
+- name: Creating symlink for bor
+  file:
+    src: "{{ root_dir }}/bor/build/bin/bor"
+    dest: "/usr/bin/bor"
+    state: link
+  become: true
+
+- name: Creating symlink for bootnode
+  file:
+    src: "{{ root_dir }}/bor/build/bin/bootnode"
+    dest: "/usr/bin/bootnode"
+    state: link
+  become: true
+
+# Tasks to clean current setup
+- name: Check if data directories exist
+  stat:
+    path: "{{ root_dir }}/.heimdalld"
+  register: dir_to_check
+
+- name: Add fail mechanism
+  fail:
+    msg: "Data directories already exist. To start fresh, use matic-cleaner.yml first and then execute setup again."
+  failed_when: dir_to_check.stat.exists and dir_to_check.stat.isdir
+
+# Tasks to setup network
+- name: Fetch node files
+  git:
+    repo: "https://{{ network_launch_repository }}.git"
+    dest: "{{ root_dir }}/launch"
+    recursive: false
+    version: "{{ network_launch_branch }}"
+
+- name: Setup node directory
+  command: cp -rf {{ root_dir }}/launch/{{ network_version }}/{{ node_type }} {{ root_dir }}/node
+
+- name: Setup Heidmall
+  command: "chdir={{ root_dir }}/node/heimdall {{ item }}"
+  with_items:
+    - bash setup.sh
+  tags:
+    - heimdall
+
+- name: Setup Bor
+  command: "chdir={{ root_dir }}/node/bor {{ item }}"
+  with_items:
+    - bash setup.sh
+  tags:
+    - bor
+
+- name: Generate service files
+  command: "chdir={{ root_dir }}/launch/{{ network_version }} {{ item }}"
+  with_items:
+    - bash service.sh
+
+# Tasks to setup services
+- name: Setup Heimdall service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld.service"
+    dest: /etc/systemd/system/heimdalld.service
+    mode: "0755"
+    remote_src: true
+  notify: reload heimdalld
+  become: true
+  tags:
+    - heimdall
+
+- name: Setup Heimdall rest service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld-rest-server.service"
+    dest: /etc/systemd/system/heimdalld-rest-server.service
+    mode: "0755"
+    remote_src: true
+  notify: reload heimdalld-rest-server
+  become: true
+  tags:
+    - heimdall
+
+- name: Setup Heimdall bridge service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld-bridge.service"
+    dest: /etc/systemd/system/heimdalld-bridge.service
+    mode: "0755"
+    remote_src: true
+  notify: reload heimdalld-bridge
+  become: true
+  tags:
+    - heimdall
+
+- name: Setup Bor service
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/bor.service"
+    dest: /etc/systemd/system/bor.service
+    mode: "0755"
+    remote_src: true
+  notify: reload bor
+  become: true
+  tags:
+    - bor
+
+- name: Create /etc/matic directory
+  file:
+    path: /etc/matic
+    state: directory
+  become: true
+
+- name: Check if metadata exists
+  stat:
+    path: /etc/matic/metadata
+  register: metadata_to_check
+
+- name: Setup metadata file
+  copy:
+    src: "{{ root_dir }}/launch/{{ network_version }}/metadata"
+    dest: /etc/matic/metadata
+    mode: "0755"
+    remote_src: true
+  become: true
+  when: metadata_to_check.stat.exists == False

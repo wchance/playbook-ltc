@@ -28,3 +28,15 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgra
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-eth-node-cronjobs" --private-key <path-to-key> -kK -vvv
 ```
+
+# Polygon Node
+
+- Installing Dependency
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency" --private-key <path-to-key> -kK -vvv
+```
+
+- Installing Matic
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic" --private-key <path-to-key> -kK -vvv
+```

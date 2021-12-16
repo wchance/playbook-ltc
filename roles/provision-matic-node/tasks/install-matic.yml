@@ -1,0 +1,210 @@
+---
+
+- name: Git clone heimdall
+  ansible.builtin.git:
+    repo: https://github.com/maticnetwork/heimdall.git
+    dest: /home/{{ ansible_user }}/.heimdall
+    version: "{{ heimdall_release_version }}"
+    force: yes
+
+- name: Build from source (heimdall)
+  command: chdir=/home/{{ ansible_user }}/.heimdall make install network={{ heimdall_network }}
+  environment:
+    PATH: /sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin
+  become: true
+
+- name: Confirm heimdall build
+  shell: /home/{{ ansible_user }}/.heimdall/heimdalld version
+
+- name: Creating symlink for heimdalld
+  file:
+    src: /home/{{ ansible_user }}/.heimdall/go/bin/heimdalld
+    dest: /usr/bin/heimdalld
+    state: link
+
+- name: Creating symlink for heimdalld
+  file:
+    src: /home/{{ ansible_user }}/.heimdall/go/bin/heimdallcli
+    dest: /usr/bin/heimdallcli
+    state: link
+
+- name: Creating symlink for heimdalld
+  file:
+    src: /home/{{ ansible_user }}/.heimdall/go/bin/bridge
+    dest: /usr/bin/bridge
+    state: link
+
+- name: Git clone bor
+  ansible.builtin.git:
+    repo: https://github.com/maticnetwork/bor.git
+    dest: /home/{{ ansible_user }}/.bor
+    version: "{{ bor_release_version }}"
+    force: yes
+
+- name: Build from source (bor)
+  command: chdir=/home/{{ ansible_user }}/.bor make bor-all
+  environment:
+    PATH: /sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin
+
+- name: Confirm bor build
+  shell: /home/{{ ansible_user }}/.bor/bor version
+
+- name: Creating symlink for bor
+  file:
+    src: /home/{{ ansible_user }}/.bor/build/bin/bor
+    dest: /usr/bin/bor
+    state: link
+
+- name: Creating symlink for bootnode
+  file:
+    src: /home/{{ ansible_user }}/.bor/build/bin/bootnode
+    dest: /usr/bin/bootnode
+    state: link
+
+- name: Create data folder (heimdall)
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/.heimdall_data
+    state: directory
+    owner: root
+    group: root
+
+- name: Initialize data folder
+  shell: heimdalld init --home /home/{{ ansible_user }}/.heimdall_data
+
+- name: Download genesis file (heimdall)
+  get_url:
+    url: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/sentry/sentry/heimdall/config/genesis.json
+    dest: /tmp/
+
+- name: Move genesis file
+  ansible.builtin.copy:
+    src: /tmp/genesis.json
+    dest: /home/{{ ansible_user }}/.heimdall_data/config/genesis.json
+    owner: root
+    group: root
+    remote_src: yes
+
+- name: Remove genesis file (heimdall)
+  ansible.builtin.file:
+    path: /tmp/genesis.json
+    state: absent
+    owner: root
+    group: root
+
+- name: Modify config file
+  shell: |
+    sed -i '/moniker/c\moniker = "{{ polygon_node_name }}"' /home/{{ ansible_user }}/.heimdall_dataconfig/config.toml
+    sed -i '/seeds/c\seeds = "f4f605d60b8ffaaf15240564e58a81103510631c@159.203.9.164:26656,4fb1bc820088764a564d4f66bba1963d47d82329@44.232.55.71:26656"' /home/{{ ansible_user }}/.heimdall_data/config/config.toml
+    sed -i '/eth_rpc_url/c\eth_rpc_url = "{{ rpc_endpoint_url }}"' /home/{{ ansible_user }}/.heimdall_data/config/config.toml
+
+- name: Create data folder (bor)
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/.bor_data
+    state: directory
+    owner: root
+    group: root
+
+- name: Create data folder (bor_data)
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/.bor_data/data
+    state: directory
+    owner: root
+    group: root
+
+- name: Download genesis file (heimdall)
+  get_url:
+    url: https://raw.githubusercontent.com/maticnetwork/launch/master/mainnet-v1/sentry/sentry/heimdall/config/genesis.json
+    dest: /tmp/
+
+- name: Move genesis file
+  ansible.builtin.copy:
+    src: /tmp/genesis.json
+    dest: /home/{{ ansible_user }}/.bor_data/genesis.json
+    owner: root
+    group: root
+    remote_src: yes
+
+- name: Initialize data folder
+  shell: bor --datadir $HOME/bor_data/data init genesis.json
+
+- name: Download and replace genesis file
+  shell: cp -rf /tmp/launch/mainnet-v1/sentry/sentry/bor/genesis.json /home/{{ ansible_user }}/.bor_data/genesis.json
+
+- name: Prepare start_bor.sh
+  ansible.builtin.template:
+    src: start-bor.j2
+    dest: /home/{{ ansible_user }}/start-bor.sh
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Make geth binary executable
+  ansible.builtin.file:
+    path: /home/{{ ansible_user }}/start-bor.sh
+    mode: 0777
+
+- name: Configure systemd heimdall.service
+  ansible.builtin.template:
+    src: heimdall-systemd-config.j2
+    dest: /etc/systemd/system/heimdalld.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/heimdalld.service
+    dest: /etc/systemd/system/multi-user.target.wants/heimdalld.service
+    owner: root
+    group: root
+    state: link
+
+- name: Configure systemd heimdalld-rest-server.service
+  ansible.builtin.template:
+    src: heimdallRest-systemd-config.j2
+    dest: /etc/systemd/system/heimdalld-rest-server.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/heimdalld-rest-server.service
+    dest: /etc/systemd/system/multi-user.target.wants/heimdalld-rest-server.service
+    owner: root
+    group: root
+    state: link
+
+- name: Configure systemd bor.service
+  ansible.builtin.template:
+    src: bor-systemd-config.j2
+    dest: /etc/systemd/system/bor.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/bor.service
+    dest: /etc/systemd/system/multi-user.target.wants/bor.service
+    owner: root
+    group: root
+    state: link
+
+- name: Run heimdall service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: heimdalld.service
+
+- name: Run heimdall service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: heimdalld-rest-server.service
+
+- name: Run heimdall service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: bor.service
