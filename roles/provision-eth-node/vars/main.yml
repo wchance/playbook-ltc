@@ -1,6 +1,6 @@
-geth_binary_version: 'geth-linux-amd64-1.10.12-6c4dc6c3'
-geth_binary_checksum: 'md5:51b5efdd8f76ced8e2d2152188b652dd'
-geth_data_path: '/home/{{ ansible_user }}/.ethereum'
+geth_binary_version: geth-linux-amd64-1.10.12-6c4dc6c3
+geth_binary_checksum: md5:51b5efdd8f76ced8e2d2152188b652dd
+geth_data_path: /home/{{ ansible_user }}/.ethereum
 geth_sync_mode: full
 geth_cache: 512
 geth_ws_address: 127.0.0.1
