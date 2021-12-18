@@ -45,12 +45,12 @@
 
 - name: Make script executable
   ansible.builtin.file:
-    path: /tmp/go-install.sh
+    path: /tmp/go-installer.sh
     mode: 0777
   when: not golang_binary_file.stat.exists
 
 - name: Run command
-  ansible.builtin.command: /tmp/go-install.sh
+  ansible.builtin.command: /tmp/go-installer.sh
   become: true
   when: not golang_binary_file.stat.exists
 

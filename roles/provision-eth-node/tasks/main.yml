@@ -22,6 +22,17 @@
     - never 
     - upgrade-geth
 
+- name: Update Geth
+  include_tasks:
+    file: update-geth.yml
+    apply:
+      tags:
+        - never 
+        - update-geth
+  tags:
+    - never 
+    - update-geth
+
 - name: Install Cronjobs
   include_tasks:
     file: install-cronjobs.yml

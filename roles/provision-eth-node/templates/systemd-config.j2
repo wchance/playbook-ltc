@@ -5,7 +5,7 @@ Wants=network.target
 
 [Service]
 WorkingDirectory={{ data_path }}
-ExecStart=/usr/bin/geth --syncmode full --datadir {{ data_path }} --cache 512 --nat none --port 38336 --ws --ws.port 8546 --ws.origins * --http --http.port 8545 --http.corsdomain * --http.vhosts * --ws.addr 127.0.0.1  --http.addr 127.0.0.1 --maxpeers 32 --http.api="eth,net,web3,personal"
+ExecStart=/usr/bin/geth --syncmode {{ geth_sync_mode }} --datadir {{ geth_data_path }} --cache {{ geth_cache }} --nat none --port 38336 --ws --ws.port 8546 --ws.origins * --http --http.port 8545 --http.corsdomain * --http.vhosts * --ws.addr {{ geth_ws_address }}  --http.addr {{ geth_http_address }} --maxpeers {{ geth_max_peers }} --http.api="eth,net,web3,personal"
 User=root
 Group=root
 Restart=always
