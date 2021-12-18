@@ -80,16 +80,26 @@
   command: cp -rf {{ root_dir }}/launch/{{ network_version }}/{{ node_type }} {{ root_dir }}/node
 
 - name: Setup Heidmall
-  command: "chdir={{ root_dir }}/node/heimdall {{ item }}"
-  with_items:
-    - sed -i "s|$HOME|/home/{{ ansible_user }}|g" setup.sh
-    - bash setup.sh
+  shell: |
+    NODE_DIR={{ root_dir }}/node
+    HEIMDALL_HOME={{ root_dir }}/.heimdalld
+    cd {{ root_dir }}/node/heimdall
+    heimdalld init
+    cp -rf $NODE_DIR/heimdall/config/genesis.json $HEIMDALL_HOME/config/root@mia-geth-matic:{{ root_dir }}/node/heimdall
+    echo "Setup done!"
 
 - name: Setup Bor
-  command: "chdir={{ root_dir }}/node/bor {{ item }}"
-  with_items:
-    - sed -i "s|${BOR_DIR:-~/.bor}|/home/{{ ansible_user }}/.bor|g" setup.sh
-    - bash setup.sh
+  shell: |
+    BOR_DIR={{ root_dir }}/.bor
+    DATA_DIR=$BOR_DIR/data
+    NODE_KEY=~/nodekey
+    cd {{ root_dir }}/node/bor
+    mkdir -p $BOR_DIR $BOR_DIR/keystore
+    bor --datadir $DATA_DIR init ./genesis.json
+    cp ./static-nodes.json $DATA_DIR/bor/static-nodes.json
+    if [ ! -f "$NODE_KEY" ]; then bootnode -genkey "$NODE_KEY"; fi;
+    cp $NODE_KEY $DATA_DIR/bor/
+    echo "Setup done!"
 
 - name: Generate service files
   command: "chdir={{ root_dir }}/launch/{{ network_version }} {{ item }}"
