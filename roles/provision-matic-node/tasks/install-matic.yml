@@ -106,6 +106,22 @@
   with_items:
     - bash service.sh
 
+# Fix paths
+- name: Replace path for bor start.sh
+  shell: sed -i 's|${BOR_DIR:-~/.bor}|{{ root_dir }}|g' {{ root_dir }}/node/bor/start.sh
+
+- name: Replace path for heimdall.service
+  shell: sed -i 's|/root/node|{{ root_dir }}/node|g' {{ root_dir }}/launch/{{ network_version }}/heimdalld.service
+
+- name: Replace path for bor.service
+  shell: sed -i 's|/root/node|{{ root_dir }}/node|g' {{ root_dir }}/launch/{{ network_version }}/bor.service
+
+- name: Replace path for heimdalld-rest-server.service
+  shell: sed -i 's|/root/node|{{ root_dir }}/node|g' {{ root_dir }}/launch/{{ network_version }}/heimdalld-rest-server.service
+
+- name: Replace path for heimdalld-bridge.service
+  shell: sed -i 's|/root/node|{{ root_dir }}/node|g' {{ root_dir }}/launch/{{ network_version }}/heimdalld-bridge.service
+
 # Tasks to setup services
 - name: Setup Heimdall service
   copy:
@@ -113,7 +129,9 @@
     dest: /etc/systemd/system/heimdalld.service
     mode: "0755"
     remote_src: true
-  notify: reload heimdalld
+  notify: 
+    - reload heimdalld
+    - restart heimdalld
   become: true
 
 - name: Setup Heimdall rest service
@@ -122,7 +140,9 @@
     dest: /etc/systemd/system/heimdalld-rest-server.service
     mode: "0755"
     remote_src: true
-  notify: reload heimdalld-rest-server
+  notify: 
+    - reload heimdalld-rest-server
+    - restart heimdalld-rest-server
   become: true
 
 - name: Setup Heimdall bridge service
@@ -131,7 +151,9 @@
     dest: /etc/systemd/system/heimdalld-bridge.service
     mode: "0755"
     remote_src: true
-  notify: reload heimdalld-bridge
+  notify: 
+    - reload heimdalld-bridge
+    - restart heimdalld-bridge
   become: true
 
 - name: Setup Bor service
@@ -140,7 +162,9 @@
     dest: /etc/systemd/system/bor.service
     mode: "0755"
     remote_src: true
-  notify: reload bor
+  notify: 
+    - reload bor
+    - restart bor
   become: true
 
 - name: Create /etc/matic directory
@@ -162,3 +186,35 @@
     remote_src: true
   become: true
   when: metadata_to_check.stat.exists == False
+
+- name: restart heimdalld
+  systemd:
+    name: heimdalld.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: restart heimdalld-rest-server
+  systemd:
+    name: heimdalld-rest-server.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: restart heimdalld-bridge
+  systemd:
+    name: heimdalld-bridge.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: restart bor
+  systemd:
+    name: bor.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes

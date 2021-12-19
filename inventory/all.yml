@@ -47,6 +47,7 @@ all:
           ansible_connection: ssh
           ansible_port: 22
     ltc-nodes:
+      hosts:
         mia-ltc-node:
           ansible_host: 10.0.41.21
           ansible_connection: ssh
@@ -56,6 +57,7 @@ all:
           ansible_connection: ssh
           ansible_port: 22
     bch-nodes:
+      hosts:
         mia-bch-node:
           ansible_host: 10.0.41.22
           ansible_connection: ssh

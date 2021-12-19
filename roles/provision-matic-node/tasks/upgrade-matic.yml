@@ -58,14 +58,34 @@
   become: true
 
 # Restart Services
-- name: Reload heimdalld
-  notify: reload heimdalld
+- name: restart heimdalld
+  systemd:
+    name: heimdalld.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
 
-- name: Reload heimdalld-rest-server
-  notify: reload heimdalld-rest-server
+- name: restart heimdalld-rest-server
+  systemd:
+    name: heimdalld-rest-server.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
 
-- name: Reload heimdalld-bridge
-  notify: reload heimdalld-bridge
+- name: restart heimdalld-bridge
+  systemd:
+    name: heimdalld-bridge.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
 
-- name: Reload bor
-  notify: reload bor
+- name: restart bor
+  systemd:
+    name: bor.service
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+  become: yes
