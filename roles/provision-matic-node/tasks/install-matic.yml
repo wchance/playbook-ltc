@@ -129,9 +129,6 @@
     dest: /etc/systemd/system/heimdalld.service
     mode: "0755"
     remote_src: true
-  notify: 
-    - reload heimdalld
-    - restart heimdalld
   become: true
 
 - name: Setup Heimdall rest service
@@ -140,20 +137,6 @@
     dest: /etc/systemd/system/heimdalld-rest-server.service
     mode: "0755"
     remote_src: true
-  notify: 
-    - reload heimdalld-rest-server
-    - restart heimdalld-rest-server
-  become: true
-
-- name: Setup Heimdall bridge service
-  copy:
-    src: "{{ root_dir }}/launch/{{ network_version }}/heimdalld-bridge.service"
-    dest: /etc/systemd/system/heimdalld-bridge.service
-    mode: "0755"
-    remote_src: true
-  notify: 
-    - reload heimdalld-bridge
-    - restart heimdalld-bridge
   become: true
 
 - name: Setup Bor service
@@ -162,9 +145,6 @@
     dest: /etc/systemd/system/bor.service
     mode: "0755"
     remote_src: true
-  notify: 
-    - reload bor
-    - restart bor
   become: true
 
 - name: Create /etc/matic directory
@@ -198,14 +178,6 @@
 - name: restart heimdalld-rest-server
   systemd:
     name: heimdalld-rest-server.service
-    state: restarted
-    enabled: yes
-    daemon_reload: yes
-  become: yes
-
-- name: restart heimdalld-bridge
-  systemd:
-    name: heimdalld-bridge.service
     state: restarted
     enabled: yes
     daemon_reload: yes

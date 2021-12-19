@@ -24,7 +24,7 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-geth" --private-key <path-to-key> -kK -vvv
 ```
 
-- Update Geth
+- Updating Geth
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "update-geth" --private-key <path-to-key> -kK -vvv
 ```
@@ -46,4 +46,14 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 - Installing Matic
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic" --private-key <path-to-key> -kK -vvv
+```
+
+- Upgrading Matic
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" --private-key <path-to-key> -kK -vvv
+```
+
+- Installing Cronjob
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic-node-cronjobs" --private-key <path-to-key> -kK -vvv
 ```
