@@ -6,10 +6,10 @@
     apply:
       tags: 
         - never
-        - install-dependency
+        - install-dependency-matic
   tags:
     - never 
-    - install-dependency
+    - install-dependency-matic
 
 - name: Install Matic
   include_tasks: 

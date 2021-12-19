@@ -40,7 +40,7 @@ The role [provision-matic-node](./roles/provision-matic-node) is the one respons
 
 - Installing Dependency
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-matic" --private-key <path-to-key> -kK -vvv
 ```
 
 - Installing Matic
