@@ -38,6 +38,9 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 The role [provision-matic-node](./roles/provision-matic-node) is the one responsible for provisioning/configuring Polygoin Nodes. This role has been tested in Ubuntu LTS-18 and LTS-20.
 
+:pushpin: Before running the playbooks.yml, make sure to update the `ansible_user` variable in the [inventory](./inventory/all.yml)
+
+
 - Installing Dependency
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-matic" --private-key <path-to-key> -kK -vvv
@@ -47,6 +50,14 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic" --private-key <path-to-key> -kK -vvv
 ```
+
+:warning: After running the install-matic tasks, stop `bor.service`. Only start bor when heimdall is synced. Stop bor by running `systemctl stop bor.service`. Check if heimdall is sync by running `curl localhost:26657/status`
+
+:pushpin: Check heimdall logs `journalctl -u heimdalld.service -f`
+
+:pushpin: Check heimdall rest-server logs `journalctl -u heimdalld-rest-server.service -f`
+
+:pushpin: Check bor logs `journalctl -u bor.service -f`
 
 - Upgrading Matic
 ```
