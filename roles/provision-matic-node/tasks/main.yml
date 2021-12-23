@@ -33,6 +33,17 @@
     - never 
     - upgrade-matic
 
+- name: Install Snapshot
+  include_tasks: 
+    file: install-snapshot.yml
+    apply:
+      tags: 
+        - never
+        - install-snapshot
+  tags:
+    - never 
+    - install-snapshot
+
 - name: Install Cronjobs
   include_tasks: 
     file: install-cronjobs.yml

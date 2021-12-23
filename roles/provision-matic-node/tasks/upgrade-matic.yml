@@ -1,5 +1,76 @@
 ---
 
+# Stop Services
+- name: restart heimdalld
+  systemd:
+    name: heimdalld.service
+    state: stopped
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: restart heimdalld-rest-server
+  systemd:
+    name: heimdalld-rest-server.service
+    state: stopped
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: restart bor
+  systemd:
+    name: bor.service
+    state: stopped
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+# Remove existing binaries
+- name: Remove heimdalld
+  file:
+    path: "{{ root_dir }}/go/bin/heimdalld"
+    state: absent
+
+- name: Remove heimdalld
+  file:
+    path: "/usr/bin/heimdalld"
+    state: absent
+
+- name: Remove heimdallcli
+  file:
+    path: "{{ root_dir }}/go/bin/heimdallcli"
+    state: absent
+
+- name: Remove heimdallcli
+  file:
+    path: "/usr/bin/heimdallcli"
+    state: absent
+
+- name: Remove bor
+  file:
+    path: "{{ root_dir }}/go/bin/bor"
+    state: absent
+
+- name: Remove bor
+  file:
+    path: "{{ root_dir }}/bor/build/bin/bor"
+    state: absent
+
+- name: Remove bor
+  file:
+    path: "/usr/bin/bor"
+    state: absent
+
+- name: Remove bootnode
+  file:
+    path: "{{ root_dir }}/bor/build/bin/bootnode"
+    state: absent
+
+- name: Remove bootnode
+  file:
+    path: "/usr/bin/bootnode"
+    state: absent
+
 # tasks file for heimdall
 - name: Clone the Heimdall
   git:
@@ -22,13 +93,6 @@
   file:
     src: "{{ root_dir }}/go/bin/heimdallcli"
     dest: "/usr/bin/heimdallcli"
-    state: link
-  become: true
-
-- name: Creating symlink for bridge
-  file:
-    src: "{{ root_dir }}/go/bin/bridge"
-    dest: "/usr/bin/bridge"
     state: link
   become: true
 
@@ -69,14 +133,6 @@
 - name: restart heimdalld-rest-server
   systemd:
     name: heimdalld-rest-server.service
-    state: restarted
-    enabled: yes
-    daemon_reload: yes
-  become: yes
-
-- name: restart heimdalld-bridge
-  systemd:
-    name: heimdalld-bridge.service
     state: restarted
     enabled: yes
     daemon_reload: yes
