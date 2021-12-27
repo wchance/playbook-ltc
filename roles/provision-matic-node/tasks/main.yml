@@ -35,14 +35,14 @@
 
 - name: Install Snapshot
   include_tasks: 
-    file: install-snapshot.yml
+    file: install-snapshots.yml
     apply:
       tags: 
         - never
-        - install-snapshot
+        - install-snapshot-matic
   tags:
     - never 
-    - install-snapshot
+    - install-snapshot-matic
 
 - name: Install Cronjobs
   include_tasks: 

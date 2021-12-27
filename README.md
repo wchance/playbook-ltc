@@ -59,6 +59,11 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 :pushpin: Check bor logs `journalctl -u bor.service -f`
 
+- Installing Snaphots - Matic
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-snapshot-matic" --private-key <path-to-key> -kK -vvv
+```
+
 - Upgrading Matic
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" --private-key <path-to-key> -kK -vvv
