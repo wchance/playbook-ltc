@@ -4,7 +4,7 @@
   shell: df -h
 
 - name: Check data_dir size (Heimdall)
-  shell: du -sch /home/neil/.heimdalld/data/
+  shell: du -sch {{ root_dir }}/.heimdalld/data/
 
 - name: Check data_dir size (Bor)
-  shell: du -sch /home/neil/.bor/data/bor/chaindata/
+  shell: du -sch {{ root_dir }}/.bor/data/bor/chaindata/
