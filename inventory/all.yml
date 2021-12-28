@@ -69,9 +69,9 @@ all:
     test-nodes:
       hosts:
         test-node:
-          ansible_host: 199.245.60.181
+          ansible_host: 10.0.41.106
           ansible_connection: ssh
-          ansible_port: 30122
+          ansible_port: 22
   vars:
   ansible_user: wchance
   ansible_become: yes 
