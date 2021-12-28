@@ -1,0 +1,12 @@
+---
+
+- name: Install dependencies
+  include_tasks: 
+    file: matic-snapshot-checker.yml
+    apply:
+      tags: 
+        - never
+        - matic-snapshot-checker
+  tags:
+    - never 
+    - matic-snapshot-checker

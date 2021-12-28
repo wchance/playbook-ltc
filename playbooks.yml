@@ -4,5 +4,6 @@
   hosts: all
   become: true
   roles:
+    - role: adhoc-cmd
     - role: provision-eth-node
     - role: provision-matic-node

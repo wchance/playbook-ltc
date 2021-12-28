@@ -1,0 +1,10 @@
+---
+
+- name: Check storage space
+  shell: df -h
+
+- name: Check data_dir size (Heimdall)
+  shell: du -sch /home/neil/.heimdalld/data/
+
+- name: Check data_dir size (Bor)
+  shell: du -sch /home/neil/.bor/data/bor/chaindata/
