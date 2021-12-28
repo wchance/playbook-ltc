@@ -16,17 +16,17 @@ The role [provision-eth-node](./roles/provision-eth-node) is the one responsible
 
 - Installing Geth
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-geth" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-geth" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 - Upgrading Geth
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-geth" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-geth" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 - Updating Geth
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "update-geth" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "update-geth" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 - Installing Cronjob
@@ -48,7 +48,7 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 - Installing Matic
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 :warning: After running the install-matic tasks, stop `bor.service`. Only start bor when heimdall is synced. Stop bor by running `systemctl stop bor.service`. Check if heimdall is sync by running `curl localhost:26657/status`
@@ -61,12 +61,12 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 - Installing Snaphots - Matic
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-snapshot-matic" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-snapshot-matic" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 - Upgrading Matic
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 - Installing Cronjob
