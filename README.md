@@ -64,6 +64,11 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-snapshot-matic" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
+- Checking Snapshot installation - Matic
+```
+ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "matic-snapshot-checker" -u <user> --private-key <path-to-key> -kK
+```
+
 - Upgrading Matic
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" -u <user> --private-key <path-to-key> -kK -vvv

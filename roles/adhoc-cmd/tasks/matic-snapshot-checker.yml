@@ -1,6 +1,6 @@
 ---
 
-- name: Check storage space
+- name: Check machine storage space
   shell: df -h
 
 - name: Check data_dir size (Heimdall)
@@ -8,3 +8,9 @@
 
 - name: Check data_dir size (Bor)
   shell: du -sch {{ root_dir }}/.bor/data/bor/chaindata/
+
+- name: Check Heimdall process. Running means snapshot install is complete
+  shell: ps aux | grep heimdall
+
+- name: Check Bor process. Running means snapshot install is complete
+  shell: ps aux | grep Bor

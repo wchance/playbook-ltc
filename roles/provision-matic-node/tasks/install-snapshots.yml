@@ -1,72 +1,15 @@
 ---
 
-# Stop Services
-- name: stop heimdalld
-  systemd:
-    name: heimdalld.service
-    state: stopped
+- name: Copy script to the target host
+  ansible.builtin.template:
+    scr: snapshot-installer.j2
+    dest: snapshot-installer.sh
+    mode: '0777'
+
+- name: Execute script
+  command: bash snapshot-installer.sh
   become: yes
 
-- name: stop heimdalld-rest-server
-  systemd:
-    name: heimdalld-rest-server.service
-    state: stopped
-  become: yes
-
-- name: stop bor
-  systemd:
-    name: bor.service
-    state: stopped
-  become: yes
-
-# Download Snapshot Heimdall
-- name: Perform data_dir clean-up (heimdall)
-  shell: rm -rf {{ root_dir }}/.heimdalld/data/*.db
-  become: yes
-
-- name: Download snapshot file (heimdall)
-  shell: cd /tmp/; wget -c {{ snapshot_url }}/{{ heimdall_snapshot }} -O - | tar -xzf - -C {{ root_dir }}/.heimdalld/data/
-  become: yes
-
-- name: Assign file ownership
-  shell: chown -R root:root {{ root_dir }}/.heimdalld/data/
-  become: yes
-
-- name: Remove snaphost files
-  shell: cd /tmp/; rm -rf *.db {{ heimdall_snapshot }}
-  become: yes
-
-# Download Snapshot Bor
-- name: Perform data_dir clean-up (bor)
-  command: rm -rf {{ root_dir }}/.bor/data/bor/chaindata/*.ldb
-  become: yes
-
-- name: Download snapshot file (bor)
-  shell: cd /tmp/; wget -c {{ snapshot_url}}/{{ bor_snapshot }} -O - | tar -xzf - -C {{ root_dir }}/.bor/data/bor/chaindata/
-
-- name: Assign file ownership
-  shell: chown -R root:root {{ root_dir }}/.bor/data/bor/chaindata/
-  become: yes
-
-- name: Remove snaphost files
-  shell: cd /tmp/; rm -rf *.db {{ bor_snapshot }}
-  become: yes
-
-# Restart Services
-- name: restart heimdalld
-  systemd:
-    name: heimdalld.service
-    state: restarted
-  become: yes
-
-- name: restart heimdalld-rest-server
-  systemd:
-    name: heimdalld-rest-server.service
-    state: restarted
-  become: yes
-
-- name: restart bor
-  systemd:
-    name: bor.service
-    state: restarted
-  become: yes
+- name: Debug Message
+  ansible.builtin.debug:
+    msg: "Installing Heimdall and Bor snapshot can take at least 4-5 hours..."
