@@ -2,8 +2,9 @@
 
 - name: Copy script to the target host
   ansible.builtin.template:
-    scr: snapshot-installer.j2
+    src: snapshot-installer.j2
     dest: snapshot-installer.sh
+    remote_src: no
     mode: '0777'
 
 - name: Execute script
