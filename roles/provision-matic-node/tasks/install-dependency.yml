@@ -29,6 +29,11 @@
     name: git
     state: present
 
+- name: Install screen
+  apt:
+    name: screen
+    state: present
+
 - name: Check golang binary
   ansible.builtin.stat:
     path: /usr/local/go

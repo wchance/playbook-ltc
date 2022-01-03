@@ -8,9 +8,9 @@
     mode: '0777'
 
 - name: Execute script
-  shell: bash snapshot-installer.sh
+  shell: "nohup bash {{ root_dir }}/snapshot-installer.sh > nohup.out 2>&1 &"
   become: yes
-  async: 30
+  async: 60
   poll: 0
 
 - name: Debug Message

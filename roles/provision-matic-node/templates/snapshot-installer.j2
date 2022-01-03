@@ -4,24 +4,30 @@
 # This script is use to install Heimdall and Bor Snapshot
 ######################
 
-sudo systemctl stop heimdalld
+echo "Stopping services..."
+sudo systemctl stop heimdalld &&
+sudo systemctl stop heimdalld-rest-server.service &&
 sudo systemctl stop bor
+echo "Services are stopped!"
 
 # For Hiemdall
-sudo rm -rf {{ root_dir }}/.heimdalld/data/*.db
-cd /tmp/ 
-wget -c {{ snapshot_url }}/{{ heimdall_snapshot }} -O - | \
-    sudo tar -xzf - -C {{ root_dir }}/.heimdalld/data/
-sudo chown -R root:root {{ root_dir }}/.heimdalld/data/
-sudo rm -rf *.db {{ heimdall_snapshot }}
+sudo rm -rf {{ root_dir }}/.heimdalld/data/*.db & 
+#wget -c {{ snapshot_url }}/{{ heimdall_snapshot }} -O - | \
+#    sudo tar -xzf - -C {{ root_dir }}/.heimdalld/data/
+#sudo chown -R root:root {{ root_dir }}/.heimdalld/data/
+#sudo rm -rf *.db {{ heimdall_snapshot }}
 
 # For Bor
 sudo rm -rf {{ root_dir }}/.bor/data/bor/chaindata/*.ldb
-cd /tmp/
 wget -c {{ snapshot_url}}/{{ bor_snapshot }} -O - | \
     sudo tar -xzf - -C {{ root_dir }}/.bor/data/bor/chaindata/
 sudo chown -R root:root {{ root_dir }}/.bor/data/bor/chaindata/
 sudo rm -rf *.db {{ bor_snapshot }}
 
+echo "Starting services..."
 sudo systemctl restart heimdalld
+sudo systemctl restart heimdalld-rest-server.service
 sudo systemctl restart bor
+echo "Services are started"
+
+disown
