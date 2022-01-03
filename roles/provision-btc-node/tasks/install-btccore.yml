@@ -1,0 +1,16 @@
+---
+
+- name: Download Bitcoin Core
+  ansible.builtin.get_url:
+    url: https://bitcoin.org/bin/{{ bitcoin_core_version }}/{{ bitcoin_core_version }}-x86_64-linux-gnu.tar.gz
+    dest: /tmp/
+    checksum: {{ bitcoin_version_shasum }}
+
+- name: Extract the tar.gz file
+  ansible.builtin.unarchive:
+    src: /tmp/{{ bitcoin_core_version }}-x86_64-linux-gnu.tar.gz
+    dest: {{ bitcoin_core_version }}-x86_64-linux-gnu.tar.gz
+    remote_src: yes
+
+- name: Install binary and files
+  shell:
