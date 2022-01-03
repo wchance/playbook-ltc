@@ -14,3 +14,4 @@
 
 - name: Check Bor process. Running means snapshot install is complete
   shell: ps aux | grep Bor
+

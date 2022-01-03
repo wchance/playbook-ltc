@@ -8,8 +8,10 @@
     mode: '0777'
 
 - name: Execute script
-  command: bash snapshot-installer.sh
+  shell: bash snapshot-installer.sh
   become: yes
+  async: 30
+  poll: 0
 
 - name: Debug Message
   ansible.builtin.debug:
