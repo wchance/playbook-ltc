@@ -72,6 +72,10 @@ all:
           ansible_host: 192.168.0.187
           ansible_connection: ssh
           ansible_port: 22
+        mytest-node:
+          ansible_host: 10.0.41.106
+          ansible_connection: ssh
+          ansible_port: 22
   vars:
   ansible_user: wchance
   ansible_become: yes 
