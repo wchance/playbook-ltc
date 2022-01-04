@@ -1,1 +1,4 @@
 ---
+
+btccore_data_path: /home/{{ ansible_user }}/.bitcoin
+matic_root_dir: /home/{{ ansible_user }}

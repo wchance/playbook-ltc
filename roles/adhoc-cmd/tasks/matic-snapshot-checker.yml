@@ -4,14 +4,13 @@
   shell: df -h
 
 - name: Check data_dir size (Heimdall)
-  shell: du -sch {{ root_dir }}/.heimdalld/data/
+  shell: du -sch {{ matic_root_dir }}/.heimdalld/data/
 
 - name: Check data_dir size (Bor)
-  shell: du -sch {{ root_dir }}/.bor/data/bor/chaindata/
+  shell: du -sch {{ matic_root_dir }}/.bor/data/bor/chaindata/
 
 - name: Check Heimdall process. Running means snapshot install is complete
   shell: ps aux | grep heimdall
 
 - name: Check Bor process. Running means snapshot install is complete
   shell: ps aux | grep Bor
-

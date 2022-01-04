@@ -87,5 +87,10 @@ The role [provision-btc-node](./roles/provision-btc-node) is the one responsible
 
 - Installing Bitcoin Core
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btccore" -u <user> --private-key <path-to-k
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btccore" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Checking Blocks
+```
+ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "btc-block-checker" -u <user> --private-key <path-to-key> -kK
 ```

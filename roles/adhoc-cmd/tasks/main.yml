@@ -1,6 +1,6 @@
 ---
 
-- name: Install dependencies
+- name: Check matic snapshot
   include_tasks: 
     file: matic-snapshot-checker.yml
     apply:
@@ -10,3 +10,14 @@
   tags:
     - never 
     - matic-snapshot-checker
+
+- name: Check btc block
+  include_tasks: 
+    file: btc-block-checker.yml
+    apply:
+      tags: 
+        - never
+        - btc-block-checker
+  tags:
+    - never 
+    - btc-block-checker

@@ -1,0 +1,7 @@
+---
+
+- name: Check if process is running
+  shell: ps aux | grep bitcoin
+
+- name: Check if node is sync
+  shell: bitcoin-cli -conf={{ btccore_data_path }}/bitcoin.conf getblockchaininfo
