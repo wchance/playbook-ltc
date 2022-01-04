@@ -78,3 +78,14 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgra
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic-node-cronjobs" --private-key <path-to-key> -kK -vvv
 ```
+
+# Bitcoin Node
+
+The role [provision-btc-node](./roles/provision-btc-node) is the one responsible for provisioning/configuring BTC Nodes. This role has been tested in Ubuntu LTS-18 abd LTS-20.
+
+:pushpin: Before running the playbooks.yml, make sure to update the `ansible_user` variable in the [inventory](./inventory/all.yml)
+
+- Installing Bitcoin Core
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btccore" -u <user> --private-key <path-to-k
+```

@@ -1,1 +1,12 @@
 ---
+
+- name: Install Btccore
+  include_tasks: 
+    file: install-btccore.yml
+    apply:
+      tags: 
+        - never
+        - install-btccore
+  tags:
+    - never 
+    - install-btccore

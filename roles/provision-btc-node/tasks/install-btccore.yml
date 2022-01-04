@@ -2,15 +2,56 @@
 
 - name: Download Bitcoin Core
   ansible.builtin.get_url:
-    url: https://bitcoin.org/bin/{{ bitcoin_core_version }}/{{ bitcoin_core_version }}-x86_64-linux-gnu.tar.gz
+    url: https://bitcoin.org/bin/{{ bitcoin_core_version }}/{{ bitcoin_core_binary }}-x86_64-linux-gnu.tar.gz
     dest: /tmp/
-    checksum: {{ bitcoin_version_shasum }}
+    checksum: "{{ bitcoin_version_shasum }}"
 
 - name: Extract the tar.gz file
   ansible.builtin.unarchive:
-    src: /tmp/{{ bitcoin_core_version }}-x86_64-linux-gnu.tar.gz
-    dest: {{ bitcoin_core_version }}-x86_64-linux-gnu.tar.gz
+    src: /tmp/{{ bitcoin_core_binary }}-x86_64-linux-gnu.tar.gz
+    dest: /tmp
     remote_src: yes
 
 - name: Install binary and files
-  shell:
+  shell: cd /tmp/; install -m 0755 -o root -g root -t /usr/local/bin {{ bitcoin_core_binary }}/bin/*
+  become: yes
+
+- name: Configure systemd
+  ansible.builtin.template:
+    src: systemd-config.j2
+    dest: /etc/systemd/system/btccore.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure btc-config
+  ansible.builtin.template:
+    src: btc-config.j2
+    dest: "{{ btccore_data_path }}/bitcoin.conf"
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/btccore.service
+    dest: /etc/systemd/system/multi-user.target.wants/btccore.service
+    owner: root
+    group: root
+    state: link
+
+- name: Make sure data_dir exist
+  ansible.builtin.file:
+    path: "{{ btccore_data_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Run btccore service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: btccore.service
+  async: 60
+  poll: 0
