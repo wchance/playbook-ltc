@@ -48,7 +48,6 @@
     group: root
     state: link
 
-
 - name: Run btccore service
   ansible.builtin.systemd:
     state: restarted
