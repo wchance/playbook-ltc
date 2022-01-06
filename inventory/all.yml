@@ -92,14 +92,14 @@ all:
           ansible_port: 22
     test-nodes:
       hosts:
-        test-node:
+        mia-test-electrumx:
           ansible_host: 199.245.60.181
           ansible_connection: ssh
           ansible_port: 30022
-        mytest-node:
-          ansible_host: 10.0.41.106
+        mia-test-tor:
+          ansible_host: 199.245.60.181
           ansible_connection: ssh
-          ansible_port: 22
+          ansible_port: 30122
   vars:
   ansible_user: wchance
   ansible_become: yes 
