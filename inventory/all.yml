@@ -100,7 +100,7 @@ all:
           ansible_host: 10.1.41.50
           ansible_connection: ssh
           ansible_port: 22
-    test-nodes:
+    testing:
       hosts:
         mia-test-electrumx:
           ansible_host: 199.245.60.181
