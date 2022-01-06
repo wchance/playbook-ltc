@@ -90,6 +90,16 @@ all:
           ansible_host: 10.1.41.25
           ansible_connection: ssh
           ansible_port: 22
+    other:
+      hosts:
+        mia-tor:
+          ansible_host: 10.0.41.50
+          ansible_connection: ssh
+          ansible_port: 22
+        sjo-tor:
+          ansible_host: 10.1.41.50
+          ansible_connection: ssh
+          ansible_port: 22
     test-nodes:
       hosts:
         mia-test-electrumx:
