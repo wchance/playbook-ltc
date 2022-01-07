@@ -1,0 +1,15 @@
+[Unit]
+Description=Electrumx
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile={{ root_dir }}
+ExecStart=/usr/local/bin/electrumx_server
+User=root
+LimitNOFILE=8192
+TimeoutStopSec=30min
+
+[Install]
+WantedBy=multi-user.target
+Alias=electrumx.service

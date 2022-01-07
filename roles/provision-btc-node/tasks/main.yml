@@ -1,5 +1,16 @@
 ---
 
+- name: Install Dependency
+  include_tasks: 
+    file: install-dependency.yml
+    apply:
+      tags: 
+        - never
+        - install-dependency-btc
+  tags:
+    - never 
+    - install-dependency-btc
+
 - name: Install Btccore
   include_tasks: 
     file: install-btccore.yml
@@ -10,3 +21,15 @@
   tags:
     - never 
     - install-btccore
+
+- name: Install Electrumx
+  include_tasks: 
+    file: install-electrumx.yml
+    apply:
+      tags: 
+        - never
+        - install-electrumx
+  tags:
+    - never 
+    - install-electrumx
+
