@@ -94,3 +94,10 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ```
 ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "btc-block-checker" -u <user> --private-key <path-to-key> -kK
 ```
+
+- Install Electrumx
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-btc" -u <user> --private-key <path-to-key> -kK -vvv
+
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+```

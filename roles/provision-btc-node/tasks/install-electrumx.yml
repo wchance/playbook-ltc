@@ -1,64 +1,146 @@
 ---
 
-- name: Cleanup existing files/folders
+- name: Make sure electrum root_dir exist
   ansible.builtin.file:
-    path: "{{ root_dir }}/electrumx"
-
-- name: Clone electrumx repo
-  ansible.builtin.git:
-    repo: "https://github.com/kyuupichan/electrumx.git"
-    dest: "{{ root_dir }}"
-    clone: yes
-    update: yes
-    force: yes
-
-- name: Install electrumx
-  shell: cd electrumx; pip3 install --user -r requirements.txt
-
-- name: Copy electrumx binary
-  shell: cd electrumx; cp electrumx_server /usr/local/bin/
-  become: yes
-
-- name: Change file ownership
-  shell: chown root:root /usr/local/bin/electrumx_server
-  become: yes
-
-- name: Make sure data_dir exist
-  ansible.builtin.file:
-    path: "{{ electrumx_data_path }}"
+    path: "{{ root_dir }}/.electrs"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0775"
 
+- name: Make sure data_dir exist
+  ansible.builtin.file:
+    path: "{{ electrum_data_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Make sure conf_dir exist
+  ansible.builtin.file:
+    path: "{{ electrum_conf_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Make sure certs_dir exist
+  ansible.builtin.file:
+    path: "{{ electrum_cert_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0775"
+
+- name: Check if .cargo exist
+  stat:
+    path: "{{ root_dir }}/.cargo"
+  register: cargo_dir
+
+- name: Install Rust
+  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  become: no
+  when: cargo_dir.stat.isdir is not defined
+
+- name: Check if ssl cert/key exist
+  stat:
+    path: "{{ electrum_cert_path }}/cert.pem"
+  register: ssl_cert
+  
+- name: Create ssl cert/key
+  shell: |
+    cd {{ electrum_cert_path }}
+    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
+      -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
+  become: yes
+  when: not ssl_cert
+
+- name: Remove default nginx.conf
+  ansible.builtin.file:
+    path: /etc/nginx/nginx.conf
+    state: absent
+  become: yes
+
+- name: Configure nginx.conf
+  ansible.builtin.template:
+    src: nginx-config.j2
+    dest: "/etc/nginx/nginx.conf"
+    owner: root
+    group: root
+    remote_src: no
+  become: yes
+
+- name: Cleanup existing files/folders
+  ansible.builtin.file:
+    path: "{{ root_dir }}/electrs"
+    state: absent
+
+- name: Clone electrs repo
+  ansible.builtin.git:
+    repo: "https://github.com/romanz/electrs.git"
+    dest: "{{ root_dir }}/electrs"
+    clone: yes
+    update: yes
+    force: yes
+  become: no
+
+- name: Install electrs
+  shell: cd electrs; ROCKSDB_INCLUDE_DIR=/usr/include ROCKSDB_LIB_DIR=/usr/lib {{ root_dir }}/.cargo/bin/cargo build --locked --release
+  become: no
+
 - name: Configure systemd
   ansible.builtin.template:
-    src: electrumx-systemd-config.j2
-    dest: /etc/systemd/system/electrumx.service
+    src: electrs-systemd-config.j2
+    dest: /etc/systemd/system/electrs.service
     owner: root
     group: root
     remote_src: no
 
-- name: Configure electrumx-config
+- name: Configure electrs-config
   ansible.builtin.template:
-    src: electrumx-config.j2
-    dest: "{{ electrumx_data_path }}/electrumx.conf"
+    src: electrs-config.j2
+    dest: "{{ electrum_data_path }}/electrs.conf"
     owner: root
     group: root
     remote_src: no
 
 - name: Configure systemd (symlink)
   ansible.builtin.file:
-    src: /etc/systemd/system/electrumx.service
-    dest: /etc/systemd/system/multi-user.target.wants/electrumx.service
+    src: /etc/systemd/system/electrs.service
+    dest: /etc/systemd/system/multi-user.target.wants/electrs.service
     owner: root
     group: root
     state: link
 
-- name: Run electrumx service
+- name: Run electrs service
   ansible.builtin.systemd:
     state: restarted
     daemon_reload: yes
-    name: electrumx.service
+    name: electrs.service
   async: 60
   poll: 0
+
+- name: Check if Tor configuration exist
+  ansible.builtin.lineinfile:
+    path: /etc/tor/torrc
+    regexp: "^#AnsibleAutomation"
+    register: torconfig_check
+
+- name: Add Tor configuration
+  shell: |
+    echo "#AnsibleAutomation" /etc/tor/torrc
+    echo "HiddenServiceDir /var/lib/tor/electrs_hidden_service/" >> /etc/tor/torrc
+    echo "HiddenServiceVersion 3" >> /etc/tor/torrc
+    echo "HiddenServicePort 50001 127.0.0.1:50001" >> /etc/tor/torrc
+  when: not torconfig_check
+
+- name: Run tor service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: tor.service
+  async: 60
+  poll: 0
+
+- name: Check Tor Address
+  shell: cat /var/lib/tor/electrs_hidden_service/hostname

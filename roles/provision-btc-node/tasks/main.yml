@@ -28,8 +28,8 @@
     apply:
       tags: 
         - never
-        - install-electrumx
+        - install-electrum
   tags:
     - never 
-    - install-electrumx
+    - install-electrum
 

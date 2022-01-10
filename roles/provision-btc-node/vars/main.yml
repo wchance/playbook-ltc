@@ -9,6 +9,8 @@ rpc_whitelist: 0.0.0.0/0
 rpc_password: passwd11!
 rpc_user: "{{ ansible_user }}"
 rpc_port: 8332
-root_dir: /home/{{ ansible_user }}/
+root_dir: /home/{{ ansible_user }}
 bitcoin_rpc_url: http://{{ ansible_user }}:{{ rpc_password }}@{{ btc_node_ip }}:{{ rpc_port }}
-electrumx_data_path: /home/{{ ansible_user }}/.electrumx
+electrum_data_path: "{{ root_dir }}/.electrs/db"
+electrum_conf_path: "{{ root_dir }}/.electrs/conf"
+electrum_cert_path: "{{ root_dir }}/.electrs/certs"

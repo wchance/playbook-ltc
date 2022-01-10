@@ -1,0 +1,23 @@
+load_module /usr/lib/nginx/modules/ngx_stream_module.so;
+
+events {
+    worker_connections 1024;
+}
+
+stream {
+        upstream electrs {
+                server 127.0.0.1:50001;
+        }
+
+        server {
+                listen 50002 ssl;
+                proxy_pass electrs;
+
+                ssl_certificate {{ electrum_cert_path }}/cert.pem;
+                ssl_certificate_key {{ electrum_cert_path }}/key.pem;
+                ssl_session_cache shared:SSL:1m;
+                ssl_session_timeout 4h;
+                ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
+                ssl_prefer_server_ciphers on;
+        }
+}
