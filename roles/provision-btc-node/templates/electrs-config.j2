@@ -10,7 +10,7 @@
 
 # The listening RPC address of bitcoind, port is usually 8332
 daemon_rpc_addr = "{{ btc_node_ip }}:8332"
-auth = "{{ ansible_user}}:{{ rpc_password }}"
+auth = "{{ rpc_user }}:{{ rpc_password }}"
 
 # The listening P2P address of bitcoind, port is usually 8333
 daemon_p2p_addr = "{{ btc_node_ip }}:8333"
