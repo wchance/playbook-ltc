@@ -6,10 +6,10 @@
     apply:
       tags: 
         - never
-        - install-dependency-btc
+        - install-dependency-electrum
   tags:
     - never 
-    - install-dependency-btc
+    - install-dependency-electrum
 
 - name: Install Btccore
   include_tasks: 
@@ -28,8 +28,7 @@
     apply:
       tags: 
         - never
-        - install-electrum
+        - install-btc-electrum
   tags:
     - never 
-    - install-electrum
-
+    - install-btc-electrum

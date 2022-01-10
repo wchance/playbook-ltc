@@ -99,7 +99,7 @@
 - name: Configure electrs-config
   ansible.builtin.template:
     src: electrs-config.j2
-    dest: "{{ electrum_data_path }}/electrs.conf"
+    dest: "{{ electrum_conf_path }}/electrs.conf"
     owner: root
     group: root
     remote_src: no
@@ -117,30 +117,26 @@
     state: restarted
     daemon_reload: yes
     name: electrs.service
-  async: 60
-  poll: 0
 
-- name: Check if Tor configuration exist
-  ansible.builtin.lineinfile:
+- name: Remove default nginx.conf
+  ansible.builtin.file:
     path: /etc/tor/torrc
-    regexp: "^#AnsibleAutomation"
-    register: torconfig_check
+    state: absent
+  become: yes
 
-- name: Add Tor configuration
-  shell: |
-    echo "#AnsibleAutomation" /etc/tor/torrc
-    echo "HiddenServiceDir /var/lib/tor/electrs_hidden_service/" >> /etc/tor/torrc
-    echo "HiddenServiceVersion 3" >> /etc/tor/torrc
-    echo "HiddenServicePort 50001 127.0.0.1:50001" >> /etc/tor/torrc
-  when: not torconfig_check
+- name: Configure torrc
+  ansible.builtin.template:
+    src: tor-config.j2
+    dest: "/etc/tor/torrc"
+    owner: root
+    group: root
+    remote_src: no
 
 - name: Run tor service
   ansible.builtin.systemd:
     state: restarted
     daemon_reload: yes
     name: tor.service
-  async: 60
-  poll: 0
 
 - name: Check Tor Address
   shell: cat /var/lib/tor/electrs_hidden_service/hostname
