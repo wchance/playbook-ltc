@@ -6,29 +6,29 @@
     apply:
       tags: 
         - never
-        - install-dependency-electrum-btc
+        - install-dependency-electrum-ltc
   tags:
     - never 
-    - install-dependency-electrum-btc
+    - install-dependency-electrum-ltc
 
-- name: Install Btccore
+- name: Install Ltccore
   include_tasks: 
-    file: install-btccore.yml
+    file: install-ltccore.yml
     apply:
       tags: 
         - never
-        - install-btccore
+        - install-ltccore
   tags:
     - never 
-    - install-btccore
+    - install-ltccore
 
-- name: Install Electrumx
+- name: Install Electrum
   include_tasks: 
     file: install-electrumx.yml
     apply:
       tags: 
         - never
-        - install-btc-electrum
+        - install-ltc-electrum
   tags:
     - never 
-    - install-btc-electrum
+    - install-ltc-electrum

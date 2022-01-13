@@ -95,9 +95,20 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "btc-block-checker" -u <user> --private-key <path-to-key> -kK
 ```
 
-- Install Electrumx
+- Install Electrum
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum-btc" -u <user> --private-key <path-to-key> -kK -vvv
 
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btc-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+# Litecoin Node
+
+The role [provision-ltc-node](./roles/provision-ltc-node) is the one responsible for provisioning/configuring LTC Nodes. This role has been tested in Ubuntu LTS-18 abd LTS-20.
+
+:pushpin: Before running the playbooks.yml, make sure to update the `ansible_user` variable in the [inventory](./inventory/all.yml)
+
+- Installing Litecoin Core
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltccore" -u <user> --private-key <path-to-key> -kK -vvv
 ```

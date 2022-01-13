@@ -1,0 +1,17 @@
+[Unit]
+Description=Electrs
+
+[Service]
+WorkingDirectory={{ electrum_data_path }}
+ExecStart={{ root_dir }}/electrs/target/release/electrs --log-filters INFO --db-dir {{ electrum_data_path }} --conf {{ electrum_conf_path }}/electrs.conf --electrum-rpc-addr="127.0.0.1:50001"
+User={{ ansible_user }}
+Group={{ ansible_user }}
+Type=simple
+KillMode=process
+TimeoutSec=60
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target
+Alias=electrs.service

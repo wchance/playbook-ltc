@@ -1,0 +1,15 @@
+---
+
+ltc_node_ip: 10.0.41.22
+litecoin_core_version: litecoin-0.18.1
+litecoin_version_shasum: sha256:ca50936299e2c5a66b954c266dcaaeef9e91b2f5307069b9894048acf3eb5751
+litecoin_data_path: /home/{{ ansible_user }}/.litecoin
+rpc_whitelist: 0.0.0.0/0
+rpc_password: passwd11
+rpc_user: wchance
+rpc_port: 9332
+root_dir: /home/{{ ansible_user }}
+litecoin_rpc_url: http://{{ rpc_user }}:{{ rpc_password }}@{{ ltc_node_ip }}:{{ rpc_port }}
+electrum_data_path: "{{ root_dir }}/.electrs/db"
+electrum_conf_path: "{{ root_dir }}/.electrs/conf"
+electrum_cert_path: "{{ root_dir }}/.electrs/certs"

@@ -6,7 +6,7 @@ bitcoin_core_binary: bitcoin-22.0
 bitcoin_version_shasum: sha256:59ebd25dd82a51638b7a6bb914586201e67db67b919b2a1ff08925a7936d1b16
 btccore_data_path: /home/{{ ansible_user }}/.bitcoin
 rpc_whitelist: 0.0.0.0/0
-rpc_password: passwd11!
+rpc_password: passwd11
 rpc_user: wchance
 rpc_port: 8332
 root_dir: /home/{{ ansible_user }}
