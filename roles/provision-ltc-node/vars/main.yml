@@ -10,6 +10,6 @@ rpc_user: wchance
 rpc_port: 9332
 root_dir: /home/{{ ansible_user }}
 litecoin_rpc_url: http://{{ rpc_user }}:{{ rpc_password }}@{{ ltc_node_ip }}:{{ rpc_port }}
-electrum_data_path: "{{ root_dir }}/.electrs/db"
-electrum_conf_path: "{{ root_dir }}/.electrs/conf"
-electrum_cert_path: "{{ root_dir }}/.electrs/certs"
+electrum_data_path: "{{ root_dir }}/.electrumx/db"
+electrum_conf_path: "{{ root_dir }}/.electrumx/conf"
+electrum_cert_path: "{{ root_dir }}/.electrumx/certs"

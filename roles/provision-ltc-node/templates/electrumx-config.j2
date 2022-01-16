@@ -1,0 +1,13 @@
+# Default configuration for LTC ElectrumX
+
+DB_DIRECTORY = "{{ electrum_data_path }}"
+COIN = "Litecoin"
+NET = "mainnet"
+DB_ENGINE = "leveldb"
+DAEMON_URL = "http://{{ rpc_user }}:{{ rpc_password }}@{{ ltc_node_ip }}:9332/"
+HOST = "0.0.0.0"
+TCP_PORT = "9333"
+SSL_PORT = "3443"
+SSL_CERTFILE = "{{ electrum_cert_path }}/cert.pem"
+SSL_KEYFILE= "{{ electrum_cert_path }}/key.pem"
+ALLOW_ROOT = "true"

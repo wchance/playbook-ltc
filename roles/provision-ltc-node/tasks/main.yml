@@ -24,7 +24,7 @@
 
 - name: Install Electrum
   include_tasks: 
-    file: install-electrumx.yml
+    file: install-electrum.yml
     apply:
       tags: 
         - never
