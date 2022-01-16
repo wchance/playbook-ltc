@@ -112,3 +112,10 @@ The role [provision-ltc-node](./roles/provision-ltc-node) is the one responsible
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltccore" -u <user> --private-key <path-to-key> -kK -vvv
 ```
+
+- Install Electrum
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum-ltc" -u <user> --private-key <path-to-key> -kK -vvv
+
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltc-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+```
