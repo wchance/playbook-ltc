@@ -2,7 +2,7 @@
 
 - name: Make sure electrum root_dir exist
   ansible.builtin.file:
-    path: "{{ root_dir }}/.electrs"
+    path: "{{ root_dir }}/.electrumx"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
@@ -43,7 +43,7 @@
     openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
       -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
   become: yes
-  when: not ssl_cert
+  when: not ssl_cert.stat.exists
 
 - name: Remove default nginx.conf
   ansible.builtin.file:
@@ -67,8 +67,9 @@
 
 - name: Clone electrumx repo
   ansible.builtin.git:
-    repo: "https://github.com/pajasevi/electrumx.git"
+    repo: "https://github.com/spesmilo/electrumx.git"
     dest: "{{ root_dir }}/electrumx"
+    version: 1.16.0
     clone: yes
     update: yes
     force: yes
