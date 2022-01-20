@@ -7,4 +7,4 @@ DAEMON_URL=http://{{ rpc_user }}:{{ rpc_password }}@{{ ltc_node_ip }}:9332/
 SSL_CERTFILE={{ electrum_cert_path }}/cert.pem
 SSL_KEYFILE={{ electrum_cert_path }}/key.pem
 ALLOW_ROOT=true
-SERVICES=tcp://:50001,ssl://:50002,wss://:50004,rpc://
+SERVICES=tcp://:50001,ssl://:50002,ws://:50003,wss://:50004,rpc://
