@@ -1,0 +1,10 @@
+# Default configuration for LTC ElectrumX
+
+DB_DIRECTORY={{ electrum_data_path }}
+COIN=Bitcoin
+DB_ENGINE=leveldb
+DAEMON_URL=http://{{ rpc_user }}:{{ rpc_password }}@{{ btc_node_ip }}:8332/
+SSL_CERTFILE={{ electrum_cert_path }}/cert.pem
+SSL_KEYFILE={{ electrum_cert_path }}/key.pem
+ALLOW_ROOT=true
+SERVICES=tcp://:50001,ssl://:50002,wss://:50004,rpc://

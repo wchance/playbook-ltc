@@ -109,7 +109,7 @@ all:
         mia-test-tor:
           ansible_host: 199.245.60.181
           ansible_connection: ssh
-          ansible_port: 30122
+          ansible_port: 30222
   vars:
   ansible_user: wchance
   ansible_become: yes 

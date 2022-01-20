@@ -2,7 +2,7 @@
 
 - name: Make sure electrum root_dir exist
   ansible.builtin.file:
-    path: "{{ root_dir }}/.electrs"
+    path: "{{ root_dir }}/.electrumx"
     state: directory
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
@@ -32,16 +32,6 @@
     group: root
     mode: "0775"
 
-- name: Check if .cargo exist
-  stat:
-    path: "{{ root_dir }}/.cargo"
-  register: cargo_dir
-
-- name: Install Rust
-  shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-  become: no
-  when: cargo_dir.stat.isdir is not defined
-
 - name: Check if ssl cert/key exist
   stat:
     path: "{{ electrum_cert_path }}/cert.pem"
@@ -53,7 +43,7 @@
     openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
       -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
   become: yes
-  when: not ssl_cert
+  when: not ssl_cert.stat.exists
 
 - name: Remove default nginx.conf
   ansible.builtin.file:
@@ -72,53 +62,56 @@
 
 - name: Cleanup existing files/folders
   ansible.builtin.file:
-    path: "{{ root_dir }}/electrs"
+    path: "{{ root_dir }}/electrumx"
     state: absent
 
-- name: Clone electrs repo
+- name: Clone electrumx repo
   ansible.builtin.git:
-    repo: "https://github.com/romanz/electrs.git"
-    dest: "{{ root_dir }}/electrs"
+    repo: "https://github.com/spesmilo/electrumx.git"
+    dest: "{{ root_dir }}/electrumx"
+    version: 1.16.0
     clone: yes
     update: yes
     force: yes
-  become: no
 
-- name: Install electrs
-  shell: cd electrs; ROCKSDB_INCLUDE_DIR=/usr/include ROCKSDB_LIB_DIR=/usr/lib {{ root_dir }}/.cargo/bin/cargo build --locked --release
-  become: no
+- name: Install LevelDB
+  pip:
+    name: plyvel
+
+- name: Install via setup.py
+  shell: cd electrumx; python3 setup.py install
 
 - name: Configure systemd
   ansible.builtin.template:
-    src: electrs-systemd-config.j2
-    dest: /etc/systemd/system/electrs.service
+    src: electrumx-systemd-config.j2
+    dest: /etc/systemd/system/electrumx.service
     owner: root
     group: root
     remote_src: no
 
-- name: Configure electrs-config
+- name: Configure electrumx-config
   ansible.builtin.template:
-    src: electrs-config.j2
-    dest: "{{ electrum_conf_path }}/electrs.conf"
+    src: electrumx-config.j2
+    dest: "{{ electrum_conf_path }}/electrumx.conf"
     owner: root
     group: root
     remote_src: no
 
 - name: Configure systemd (symlink)
   ansible.builtin.file:
-    src: /etc/systemd/system/electrs.service
-    dest: /etc/systemd/system/multi-user.target.wants/electrs.service
+    src: /etc/systemd/system/electrumx.service
+    dest: /etc/systemd/system/multi-user.target.wants/electrumx.service
     owner: root
     group: root
     state: link
 
-- name: Run electrs service
+- name: Run electrumx service
   ansible.builtin.systemd:
     state: restarted
     daemon_reload: yes
-    name: electrs.service
+    name: electrumx.service
 
-- name: Remove default nginx.conf
+- name: Remove default torrc
   ansible.builtin.file:
     path: /etc/tor/torrc
     state: absent
@@ -139,4 +132,4 @@
     name: tor.service
 
 - name: Check Tor Address
-  shell: cat /var/lib/tor/electrs_hidden_service/hostname
+  shell: cat /var/lib/tor/electrumx_hidden_service/hostname

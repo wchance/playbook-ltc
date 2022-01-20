@@ -1,0 +1,14 @@
+[Unit]
+Description=Electrumx
+After=network.target
+
+[Service]
+EnvironmentFile={{ electrum_conf_path }}/electrumx.conf
+ExecStart=/usr/local/bin/electrumx_server
+User=root
+LimitNOFILE=8192
+TimeoutStopSec=30min
+
+[Install]
+WantedBy=multi-user.target
+Alias=electrumx.service
