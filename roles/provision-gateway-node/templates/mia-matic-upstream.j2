@@ -15,9 +15,9 @@ server {
     server_name mia-matic.gw.xhain.io;
     keepalive_timeout 70;
 
-    ssl_certificate  /etc/nginx/ssl/ssl-cert-mia-gw.csr;
+    ssl_certificate  /etc/nginx/ssl/ssl-cert-mia-gw.crt;
     ssl_certificate_key /etc/nginx/ssl/private/ssl-cert-mia-gw.key;
-    
+
     location /ws/matic {
         proxy_pass http://mia-matic-node;
         proxy_set_header Host $host;

@@ -15,7 +15,7 @@ server {
     server_name mia-btc.gw.xhain.io;
     keepalive_timeout 70;
 
-    ssl_certificate  /etc/nginx/ssl/ssl-cert-mia-gw.csr;
+    ssl_certificate  /etc/nginx/ssl/ssl-cert-mia-gw.crt;
     ssl_certificate_key /etc/nginx/ssl/private/ssl-cert-mia-gw.key;
 
     location /ws/btc {
