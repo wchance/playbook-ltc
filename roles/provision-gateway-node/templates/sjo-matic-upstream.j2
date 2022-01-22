@@ -1,0 +1,28 @@
+upstream sjo-matic-node {
+    least_conn;
+    server 10.1.41.6:8546 fail_timeout=0;
+    keepalive 8;
+}
+
+server {
+    listen 80;
+    server_name sjo-matic.gw.xhain.io;
+    return 301 https://sjo-matic.gw.xhain.io$request_uri;
+}
+
+server {
+    listen 443;
+    server_name sjo-matic.gw.xhain.io;
+    keepalive_timeout 70;
+
+    ssl_certificate  /etc/ssl/gateway/ssl.crt;
+    ssl_certificate_key /etc/ssl/gateway/ssl.key;
+
+    location /ws/matic {
+        proxy_pass http://sjo-matic-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}

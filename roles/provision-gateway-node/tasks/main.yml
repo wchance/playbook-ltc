@@ -1,0 +1,12 @@
+---
+
+- name: Configure Gateway
+  include_tasks: 
+    file: install-mia-gateway.yml
+    apply:
+      tags: 
+        - never
+        - install-mia-gateway
+  tags:
+    - never 
+    - install-mia-gateway

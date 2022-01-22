@@ -1,0 +1,28 @@
+upstream sjo-btc-node {
+    least_conn;
+    server 10.1.41.21:50003 fail_timeout=0;
+    keepalive 8;
+}
+
+server {
+    listen 80;
+    server_name sjo-btc.gw.xhain.io;
+    return 301 https://sjo-btc.gw.xhain.io$request_uri;
+}
+
+server {
+    listen 443;
+    server_name sjo-btc.gw.xhain.io;
+    keepalive_timeout 70;
+
+    ssl_certificate  /etc/ssl/gateway/ssl.crt;
+    ssl_certificate_key /etc/ssl/gateway/ssl.key;
+
+    location /ws/btc {
+        proxy_pass http://sjo-btc-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+}

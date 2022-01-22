@@ -1,0 +1,55 @@
+---
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Add sites-available (mia-btc-upstream)
+  ansible.builtin.template:
+    src: mia-btc-upstream.j2
+    dest: /etc/nginx/sites-available/mia-btc-upstream.conf
+
+- name: Add sites-enable (mia-btc-upstream)
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/mia-btc-upstream.conf
+    dest: /etc/nginx/sites-enabled/mia-btc-upstream.conf
+    state: link
+
+- name: Add sites-available (mia-ltc-upstream)
+  ansible.builtin.template:
+    src: mia-ltc-upstream.j2
+    dest: /etc/nginx/sites-available/mia-ltc-upstream.conf
+
+- name: Add sites-enable (mia-ltc-upstream)
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/mia-ltc-upstream.conf
+    dest: /etc/nginx/sites-enabled/mia-ltc-upstream.conf
+    state: link
+
+- name: Add sites-available (mia-eth-upstream)
+  ansible.builtin.template:
+    src: mia-eth-upstream.j2
+    dest: /etc/nginx/sites-available/mia-eth-upstream.conf
+
+- name: Add sites-enable (mia-eth-upstream)
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/mia-eth-upstream.conf
+    dest: /etc/nginx/sites-enabled/mia-eth-upstream.conf
+    state: link
+
+- name: Add sites-available (mia-matic-upstream)
+  ansible.builtin.template:
+    src: mia-matic-upstream.j2
+    dest: /etc/nginx/sites-available/mia-matic-upstream.conf
+
+- name: Add sites-enable (mia-matic-upstream)
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/mia-matic-upstream.conf
+    dest: /etc/nginx/sites-enabled/mia-matic-upstream.conf
+    state: link
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted

@@ -9,3 +9,4 @@
     - role: provision-matic-node
     - role: provision-btc-node
     - role: provision-ltc-node
+    - role: provision-gateway-node
