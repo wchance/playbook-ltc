@@ -10,3 +10,14 @@
   tags:
     - never 
     - install-mia-gateway
+
+- name: Configure Gateway
+  include_tasks: 
+    file: install-sjo-gateway.yml
+    apply:
+      tags: 
+        - never
+        - install-sjo-gateway
+  tags:
+    - never 
+    - install-sjo-gateway

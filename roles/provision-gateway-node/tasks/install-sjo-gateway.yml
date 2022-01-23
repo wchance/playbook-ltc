@@ -1,0 +1,22 @@
+---
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Add sites-available (sjo-gateway)
+  ansible.builtin.template:
+    src: sjo-gateway.j2
+    dest: /etc/nginx/sites-available/sjo-gateway.conf
+
+- name: Add sites-enable (sjo-gateway)
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/sjo-gateway.conf
+    dest: /etc/nginx/sites-enabled/sjo-gateway.conf
+    state: link
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted

@@ -19,11 +19,6 @@ The role [provision-eth-node](./roles/provision-eth-node) is the one responsible
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-geth" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
-- Installing Nginx
-```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-eth-nginx" --private-key <path-to-key> -kK -vvv
-```
-
 - Upgrading Geth
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-geth" -u <user> --private-key <path-to-key> -kK -vvv
@@ -79,11 +74,6 @@ ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.ym
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
-- Installing Nginx
-```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic-nginx" --private-key <path-to-key> -kK -vvv
-```
-
 - Installing Cronjob
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic-node-cronjobs" --private-key <path-to-key> -kK -vvv
@@ -128,4 +118,17 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum-ltc" -u <user> --private-key <path-to-key> -kK -vvv
 
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltc-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+# Gateway Node
+The role [provision-gateway-node](./roles/provision-gateway-node) is the one responsible for provisioning/configuring Gateway Nodes or the reverse-proxy servers.
+
+- Install MIA Gateway
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-mia-gateway" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Install SJO Gateway
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-sjo-gateway" -u <user> --private-key <path-to-key> -kK -vvv
 ```
