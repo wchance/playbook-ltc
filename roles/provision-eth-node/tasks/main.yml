@@ -11,6 +11,17 @@
     - never 
     - install-geth
 
+- name: Install Geth
+  include_tasks: 
+    file: install-nginx.yml
+    apply:
+      tags: 
+        - never
+        - install-eth-nginx
+  tags:
+    - never 
+    - install-eth-nginx
+
 - name: Upgrade Geth
   include_tasks:
     file: upgrade-geth.yml

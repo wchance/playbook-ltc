@@ -42,6 +42,7 @@ all:
           ansible_host: 10.0.41.20
           ansible_connection: ssh
           ansible_port: 22
+          btc_node_ip: 10.0.41.20
         mia-btc-electrumx:
           ansible_host: 10.0.41.21
           ansible_connection: ssh
@@ -51,6 +52,7 @@ all:
           ansible_host: 10.1.41.20
           ansible_connection: ssh
           ansible_port: 22
+          btc_node_ip: 10.1.41.20
         sjo-btc-electrumx:
           ansible_host: 10.1.41.21
           ansible_connection: ssh
@@ -62,6 +64,7 @@ all:
           ansible_host: 10.0.41.22
           ansible_connection: ssh
           ansible_port: 22
+          ltc_node_ip: 10.0.41.22
         mia-ltc-electrumx:
           ansible_host: 10.0.41.23
           ansible_connection: ssh
@@ -71,6 +74,7 @@ all:
           ansible_host: 10.1.41.22
           ansible_connection: ssh
           ansible_port: 22
+          ltc_node_ip: 10.1.41.22
         sjo-ltc-electrumx:
           ansible_host: 10.1.41.23
           ansible_connection: ssh
@@ -108,14 +112,14 @@ all:
           ansible_port: 22
     testing:
       hosts:
-        mia-test-electrumx:
+        test-bch-electrum:
           ansible_host: 199.245.60.181
           ansible_connection: ssh
           ansible_port: 30022
-        mia-test-tor:
+        test-bch-node:
           ansible_host: 199.245.60.181
           ansible_connection: ssh
-          ansible_port: 30222
+          ansible_port: 30322
   vars:
   ansible_user: wchance
   ansible_become: yes 

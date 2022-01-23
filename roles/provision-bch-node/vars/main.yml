@@ -1,0 +1,16 @@
+---
+
+bch_node_ip: 
+bcash_core_version: v24.0.0
+bcash_core_binary: bitcoin-cash-node-24.0.0
+bcash_version_shasum: sha256:54ef3797a0cf3f0d0292e968d761b3480d15c9723954ce29b33ccbf5fa3ed4ff
+bchcore_data_path: /home/{{ ansible_user }}/.bcash
+rpc_whitelist: 0.0.0.0/0
+rpc_password: passwd11!
+rpc_user: wchance
+rpc_port: 8332
+root_dir: /home/{{ ansible_user }}
+bcash_rpc_url: http://{{ ansible_user }}:{{ rpc_password }}@{{ btc_node_ip }}:{{ rpc_port }}
+electrum_data_path: "{{ root_dir }}/.electrumx/db"
+electrum_conf_path: "{{ root_dir }}/.electrumx/conf"
+electrum_cert_path: "{{ root_dir }}/.electrumx/certs"

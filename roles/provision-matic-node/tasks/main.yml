@@ -11,6 +11,17 @@
     - never 
     - install-dependency-matic
 
+- name: Install Nginx
+  include_tasks: 
+    file: install-nginx.yml
+    apply:
+      tags: 
+        - never
+        - install-matic-nginx
+  tags:
+    - never 
+    - install-matic-nginx
+
 - name: Install Matic
   include_tasks: 
     file: install-matic.yml

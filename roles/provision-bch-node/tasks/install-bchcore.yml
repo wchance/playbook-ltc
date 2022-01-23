@@ -1,0 +1,58 @@
+---
+
+- name: Download Bcash Core
+  ansible.builtin.get_url:
+    url: https://github.com/bitcoin-cash-node/bitcoin-cash-node/releases/download/{{ bcash_core_version }}/{{ bcash_core_binary }}-x86_64-linux-gnu.tar.gz
+    dest: /tmp/
+    checksum: "{{ bcash_version_shasum }}"
+
+- name: Extract the tar.gz file
+  ansible.builtin.unarchive:
+    src: /tmp/{{ bcash_core_binary }}-x86_64-linux-gnu.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Install binary and files
+  shell: cd /tmp/; install -m 0755 -o root -g root -t /usr/local/bin {{ bcash_core_binary }}/bin/*
+  become: yes
+
+- name: Make sure data_dir exist
+  ansible.builtin.file:
+    path: "{{ bchcore_data_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Configure systemd
+  ansible.builtin.template:
+    src: bch-systemd-config.j2
+    dest: /etc/systemd/system/bchcore.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure btc-config
+  ansible.builtin.template:
+    src: bch-config.j2
+    dest: "{{ bchcore_data_path }}/bcash.conf"
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/bchcore.service
+    dest: /etc/systemd/system/multi-user.target.wants/bchcore.service
+    owner: root
+    group: root
+    state: link
+
+- name: Run bchcore service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: bchcore.service
+  async: 60
+  poll: 0
+

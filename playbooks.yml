@@ -10,3 +10,4 @@
     - role: provision-btc-node
     - role: provision-ltc-node
     - role: provision-gateway-node
+    - role: provision-bch-node

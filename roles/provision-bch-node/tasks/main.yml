@@ -1,0 +1,34 @@
+---
+
+- name: Install Dependency
+  include_tasks: 
+    file: install-dependency.yml
+    apply:
+      tags: 
+        - never
+        - install-dependency-electrum-bch
+  tags:
+    - never 
+    - install-dependency-electrum-bch
+
+- name: Install Btccore
+  include_tasks: 
+    file: install-bchcore.yml
+    apply:
+      tags: 
+        - never
+        - install-bchcore
+  tags:
+    - never 
+    - install-bchcore
+
+- name: Install Electrumx
+  include_tasks: 
+    file: install-electrum.yml
+    apply:
+      tags: 
+        - never
+        - install-bch-electrum
+  tags:
+    - never 
+    - install-bch-electrum

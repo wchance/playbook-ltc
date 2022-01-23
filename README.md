@@ -19,6 +19,11 @@ The role [provision-eth-node](./roles/provision-eth-node) is the one responsible
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-geth" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
+- Installing Nginx
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-eth-nginx" --private-key <path-to-key> -kK -vvv
+```
+
 - Upgrading Geth
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-geth" -u <user> --private-key <path-to-key> -kK -vvv
@@ -72,6 +77,11 @@ ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.ym
 - Upgrading Matic
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "upgrade-matic" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Installing Nginx
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-matic-nginx" --private-key <path-to-key> -kK -vvv
 ```
 
 - Installing Cronjob
