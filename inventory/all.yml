@@ -119,7 +119,7 @@ all:
         test-bch-node:
           ansible_host: 199.245.60.181
           ansible_connection: ssh
-          ansible_port: 30322
+          ansible_port: 30522
   vars:
   ansible_user: wchance
   ansible_become: yes 
