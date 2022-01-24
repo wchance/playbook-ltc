@@ -6,7 +6,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/bitcoind -daemon -datadir={{ bchcore_data_path }} -pid={{ bchcore_data_path }}/bitcoind.pid -conf={{ bchcore_data_path }}/bitcoin.conf -disablewallet 
+ExecStart=/usr/local/bin/bitcoind -daemon -datadir={{ bchcore_data_path }} -pid={{ bchcore_data_path }}/bitcoind.pid -conf={{ bchcore_data_path }}/bcash.conf -disablewallet 
 
 # Process management
 ####################

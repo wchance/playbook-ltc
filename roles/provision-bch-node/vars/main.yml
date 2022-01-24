@@ -1,6 +1,6 @@
 ---
 
-bch_node_ip: 
+bch_node_ip: 10.0.41.24
 bcash_core_version: v24.0.0
 bcash_core_binary: bitcoin-cash-node-24.0.0
 bcash_version_shasum: sha256:54ef3797a0cf3f0d0292e968d761b3480d15c9723954ce29b33ccbf5fa3ed4ff
