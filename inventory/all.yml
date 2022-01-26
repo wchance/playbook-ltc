@@ -100,14 +100,14 @@ all:
           ansible_connection: ssh
           ansible_port: 22
           bch_node_ip: 10.1.41.24
-    other:
+    gateway:
       hosts:
-        mia-tor:
-          ansible_host: 10.0.41.50
+	mia-gw:
+	  ansible_host: 199.245.60.190
           ansible_connection: ssh
           ansible_port: 22
-        sjo-tor:
-          ansible_host: 10.1.41.50
+	sjo-gw:
+	  ansible_host: 190.184.199.78
           ansible_connection: ssh
           ansible_port: 22
     testing:
