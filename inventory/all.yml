@@ -86,6 +86,7 @@ all:
           ansible_host: 10.0.41.24
           ansible_connection: ssh
           ansible_port: 22
+          bch_node_ip: 10.0.41.24
         mia-bch-electrumx:
           ansible_host: 10.0.41.25
           ansible_connection: ssh
@@ -95,6 +96,7 @@ all:
           ansible_host: 10.1.41.24
           ansible_connection: ssh
           ansible_port: 22
+          bch_node_ip: 10.1.41.24
         sjo-bch-electrumx:
           ansible_host: 10.1.41.25
           ansible_connection: ssh
