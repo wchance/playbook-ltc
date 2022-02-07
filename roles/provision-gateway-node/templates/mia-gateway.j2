@@ -28,6 +28,12 @@ upstream mia-bch-node {
     keepalive 8;
 }
 
+upstream mia-avax-node {
+    least_conn;
+    server 10.0.41.8:9650 fail_timeout=0;
+    keepalive 8;
+}
+
 server {
     listen 80;
     return 301 https://mia.gw.xhain.io$request_uri;
@@ -110,6 +116,21 @@ server {
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-bch-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /ws/avax {
+        rewrite /ws/avax/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-avax-node;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

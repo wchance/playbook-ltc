@@ -1,0 +1,35 @@
+---
+
+- name: Clone Avax
+  git:
+    repo: "https://github.com/ava-labs/avalanchego.git"
+    dest: "{{ root_dir }}/avalanchego"
+    force: yes
+    version: "{{ avalanchego_branch }}"
+
+- name: Build Avax
+  shell: cd avalanchego; ./scripts/build.sh
+
+- name: Configure systemd
+  ansible.builtin.template:
+    src: avax-systemd-config.j2
+    dest: /etc/systemd/system/avalanche.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/avalanche.service
+    dest: /etc/systemd/system/multi-user.target.wants/avalanche.service
+    owner: root
+    group: root
+    state: link
+
+- name: Run avalanche service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: avalanche.service
+  async: 60
+  poll: 0

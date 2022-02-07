@@ -100,6 +100,16 @@ all:
           ansible_connection: ssh
           ansible_port: 22
           bch_node_ip: 10.1.41.24
+    avax-nodes:
+      hosts:
+        mia-avax-node:
+          ansible_host: 10.0.41.8
+          ansible_connection: ssh
+          ansible_port: 22
+        sjo-avax-node:
+          ansible_host: 10.1.41.8
+          ansible_connection: ssh
+          ansible_port: 22
     gateway:
       hosts:
         mia-gw:
@@ -112,16 +122,10 @@ all:
           ansible_port: 22
     testing:
       hosts:
-        test-bch-electrum:
-          ansible_host: 199.245.60.181
+        test-avax-node:
+          ansible_host: 209.97.168.83
           ansible_connection: ssh
-          ansible_port: 30422
-          bch_node_ip: 10.0.41.24
-        test-bch-node:
-          ansible_host: 199.245.60.181
-          ansible_connection: ssh
-          ansible_port: 30322
-          bch_node_ip: 10.0.41.24
+          ansible_port: 22
   vars:
   ansible_user: wchance
   ansible_become: yes 
