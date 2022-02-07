@@ -132,3 +132,13 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-sjo-gateway" -u <user> --private-key <path-to-key> -kK -vvv
 ```
+
+# Avalanche Node
+The role [provision-avax-node](./roles/provision-avax-node) is the one responsible for provisioning/configuring Avalanche Nodes.
+
+- Install Avalanche
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-avax" -u <user> --private-key <path-to-key> -kK -vvv
+
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-avax" -u <user> --private-key <path-to-key> -kK -vvv
+```
