@@ -112,6 +112,16 @@ all:
           ansible_host: 10.1.41.8
           ansible_connection: ssh
           ansible_port: 22
+    ada-nodes:
+      hosts:
+        mia-ada-node:
+          ansible_host: 10.0.41.9
+          ansible_connection: ssh
+          ansible_port: 22
+        sjo-ada-node:
+          ansible_host: 10.1.41.9
+          ansible_connection: ssh
+          ansible_port: 22
     gateway:
       hosts:
         mia-gw:
