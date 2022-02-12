@@ -12,3 +12,4 @@
     - role: provision-gateway-node
     - role: provision-bch-node
     - role: provision-avax-node
+    - role: provision-ada-node

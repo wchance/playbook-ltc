@@ -1,0 +1,17 @@
+ [Unit]
+Description=Cardano
+After=network.target
+
+[Service]
+Type=simple
+Environment="LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH"
+Environment="PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+ExecStart={{ root_dir }}/.local/bin/cardano-node run --topology {{ root_dir }}/.cardano/config/mainnet-topology.json --database-path  {{ root_dir }}/.cardano/db --socket-path {{ root_dir }}/.cardano/db/node.socket --host-addr 0.0.0.0 --port 3001 --config {{ root_dir }}/.cardano/config/mainnet-config.json
+User=root
+Group=root
+LimitNOFILE=8192
+TimeoutStopSec=30min
+
+[Install]
+WantedBy=multi-user.target
+Alias=cardano.service

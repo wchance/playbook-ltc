@@ -1,0 +1,23 @@
+---
+
+- name: Install Dependency
+  include_tasks: 
+    file: install-dependency.yml
+    apply:
+      tags: 
+        - never
+        - install-dependency-ada
+  tags:
+    - never 
+    - install-dependency-ada
+
+- name: Install Avax
+  include_tasks: 
+    file: install-ada.yml
+    apply:
+      tags: 
+        - never
+        - install-ada
+  tags:
+    - never 
+    - install-ada

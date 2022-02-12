@@ -142,3 +142,13 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-avax" -u <user> --private-key <path-to-key> -kK -vvv
 ```
+
+# Cardano Node
+The role [provision-ada-node](./roles/provision-ada-node) is the one responsible for provisioning/configuring Cardano Nodes.
+
+- Install Avalanche
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-ada" -u <user> --private-key <path-to-key> -kK -vvv
+
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ada" -u <user> --private-key <path-to-key> -kK -vvv
+```

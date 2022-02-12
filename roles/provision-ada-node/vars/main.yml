@@ -1,0 +1,3 @@
+libsodium_version: 66f017f1
+cardano_version: master
+root_dir: /home/{{ ansible_user }}
