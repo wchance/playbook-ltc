@@ -103,6 +103,8 @@
   shell: ". {{ root_dir }}/.bashrc; nohup /bin/bash /tmp/binary-builder.sh 1> /tmp/build.log 2>&1 &"
   args:
     executable: /bin/bash
-  become: false
+  become: true
+  become_method: su
+  become_user: "{{ admin_user }}"
   async: 60
   poll: 0
