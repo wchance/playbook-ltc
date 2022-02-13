@@ -30,5 +30,5 @@ cp -p "$(./scripts/bin-path.sh cardano-node)" {{ root_dir }}/.local/bin/
 cp -p "$(./scripts/bin-path.sh cardano-cli)" {{ root_dir }}/.local/bin/
 
 # Run Cardano
-sudo systemctl restart cardano.service
-echo "........ cardano-full-node has been started ........"
+echo "........ cardano-full-node can now be started ........"
+echo "........ run: sudo systemctl restart cardano.service ........"
