@@ -193,7 +193,3 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ada" -u <user> --private-key <path-to-key> -kK -vvv
 ```
-
-:pushpin: After the `/tmp/build.log` shows "cardano-full-node can now be
-started", run the command `sudo systemctl restart cardano.service` to for the
-cardano service to be activated.
