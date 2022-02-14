@@ -1,5 +1,4 @@
 ---
-
 - name: Install ghcup
   shell: (mkdir -p ~/.ghcup/bin && curl https://gitlab.haskell.org/haskell/ghcup/raw/master/ghcup > ~/.ghcup/bin/ghcup && chmod +x ~/.ghcup/bin/ghcup) && echo "Success"
   become: false
@@ -28,29 +27,6 @@
   shell: /bin/bash /tmp/ghcup-installer.sh
   become: false
 
-- name: Create source directory
-  ansible.builtin.file:
-    path: "{{ root_dir }}/cardano"
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-
-- name: Clone libsodium repository
-  ansible.builtin.git:
-    repo: "https://github.com/input-output-hk/libsodium"
-    dest: "{{ root_dir }}/cardano/libsodium"
-    clone: yes
-    update: yes
-  become: false
-
-- name: Clone cardano repository
-  ansible.builtin.git:
-    repo: "https://github.com/input-output-hk/cardano-node.git"
-    dest: "{{ root_dir }}/cardano/cardano-node"
-    clone: yes
-    update: yes
-  become: false
-
 - name: Create binary directory
   ansible.builtin.file:
     path: "{{ root_dir }}/.local/bin"
@@ -58,14 +34,6 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     recurse: yes
-
-- name: Configure Builder
-  ansible.builtin.template:
-    src: binary-builder.j2
-    dest: /tmp/binary-builder.sh
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    remote_src: no
 
 - name: Download config files
   ansible.builtin.template:
@@ -99,12 +67,21 @@
   async: 60
   poll: 0
 
-- name: Build binary
-  shell: ". {{ root_dir }}/.bashrc; nohup /bin/bash /tmp/binary-builder.sh 1> /tmp/build.log 2>&1 &"
+- name: Download binary
+  shell: |
+    mkdir /tmp/binary
+    cd /tmp/binary
+    wget https://hydra.iohk.io/build/9941151/download/1/cardano-node-{{ cardano_version }}-linux.tar.gz
+    tar -xvf cardano-node-{{ cardano_version }}-linux.tar.gz
+    cp cardano-node {{ root_dir }}/.local/bin
+    cp cardano-cli {{ root_dir }}/.local/bin
+    rm -rf /tmp/binary
   args:
     executable: /bin/bash
-  become: true
-  become_method: su
-  become_user: "{{ admin_user }}"
-  async: 60
-  poll: 0
+  become: false
+
+- name: Run cardano service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: cardano.service

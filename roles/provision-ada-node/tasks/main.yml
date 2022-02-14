@@ -1,23 +1,22 @@
 ---
-
 - name: Install Dependency
-  include_tasks: 
+  include_tasks:
     file: install-dependency.yml
     apply:
-      tags: 
+      tags:
         - never
         - install-dependency-ada
   tags:
-    - never 
+    - never
     - install-dependency-ada
 
-- name: Install Avax
-  include_tasks: 
+- name: Install Ada
+  include_tasks:
     file: install-ada.yml
     apply:
-      tags: 
+      tags:
         - never
         - install-ada
   tags:
-    - never 
+    - never
     - install-ada

@@ -1,4 +1,2 @@
-libsodium_version: 66f017f1
-cardano_version: master
+cardano_version: 1.33.0
 root_dir: /home/{{ ansible_user }}
-admin_user: wchance
