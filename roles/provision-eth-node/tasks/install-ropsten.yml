@@ -47,7 +47,7 @@
 
 - name: Configure systemd
   ansible.builtin.template:
-    src: ethereum-systemd-config.j2
+    src: ropsten-systemd-config.j2
     dest: /etc/systemd/system/geth.service
     owner: root
     group: root
@@ -67,6 +67,17 @@
     state: directory
     owner: root
     group: root
+
+- name: Configure genesis block
+  ansible.builtin.template:
+    src: ropsten-genesis.j2
+    dest: /tmp/genesis.json
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Initialize Ropsten genesis block
+  shell: /usr/bin/geth --datadir {{ geth_data_path }} init /tmp/genesis.json
 
 - name: Run geth service
   ansible.builtin.systemd:

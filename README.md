@@ -24,6 +24,12 @@ LTS-18 and LTS-20.
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-geth" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
+- Installing Ropsten
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ropsten" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
 - Upgrading Geth
 
 ```

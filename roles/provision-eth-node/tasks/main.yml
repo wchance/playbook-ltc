@@ -1,25 +1,35 @@
 ---
-
 - name: Install Geth
-  include_tasks: 
+  include_tasks:
     file: install-geth.yml
     apply:
-      tags: 
+      tags:
         - never
         - install-geth
   tags:
-    - never 
+    - never
     - install-geth
+
+- name: Install Ropsten
+  include_tasks:
+    file: install-ropsten.yml
+    apply:
+      tags:
+        - never
+        - install-ropsten
+  tags:
+    - never
+    - install-ropsten
 
 - name: Upgrade Geth
   include_tasks:
     file: upgrade-geth.yml
     apply:
       tags:
-        - never 
+        - never
         - upgrade-geth
   tags:
-    - never 
+    - never
     - upgrade-geth
 
 - name: Update Geth
@@ -27,10 +37,10 @@
     file: update-geth.yml
     apply:
       tags:
-        - never 
+        - never
         - update-geth
   tags:
-    - never 
+    - never
     - update-geth
 
 - name: Install Cronjobs
@@ -38,9 +48,9 @@
     file: install-cronjobs.yml
     apply:
       tags:
-        - never 
+        - never
         - install-eth-node-cronjobs
   tags:
-    - never 
+    - never
     - install-cronjobs
     - install-eth-node-cronjobs
