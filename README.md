@@ -198,4 +198,6 @@ for provisioning/configuring Cardano Nodes.
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-ada" -u <user> --private-key <path-to-key> -kK -vvv
 
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ada" -u <user> --private-key <path-to-key> -kK -vvv
+
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ogmios" -u <user> --private-key <path-to-key> -kK -vvv
 ```

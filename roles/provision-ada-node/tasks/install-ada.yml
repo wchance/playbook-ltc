@@ -71,7 +71,7 @@
   shell: |
     mkdir /tmp/binary
     cd /tmp/binary
-    wget https://hydra.iohk.io/build/9941151/download/1/cardano-node-{{ cardano_version }}-linux.tar.gz
+    wget https://hydra.iohk.io/build/{{ cardano_build_number }}/download/1/cardano-node-{{ cardano_version }}-linux.tar.gz
     tar -xvf cardano-node-{{ cardano_version }}-linux.tar.gz
     cp cardano-node {{ root_dir }}/.local/bin
     cp cardano-cli {{ root_dir }}/.local/bin
