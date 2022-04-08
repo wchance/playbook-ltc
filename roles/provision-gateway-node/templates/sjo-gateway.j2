@@ -50,6 +50,12 @@ server {
     ssl_certificate_key /etc/nginx/ssl/private/ssl-cert-sjo-gw.key;
 
     location /ws/btc {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-btc-node;
@@ -65,6 +71,12 @@ server {
     }
 
     location /ws/eth {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-eth-node/;
@@ -81,6 +93,12 @@ server {
     }
 
     location /ws/ltc {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-ltc-node;
@@ -96,6 +114,12 @@ server {
     }
 
     location /ws/matic {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-matic-node/;
@@ -111,6 +135,12 @@ server {
     }
 
     location /ws/bch {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-bch-node;
@@ -126,6 +156,12 @@ server {
     }
 
     location /ws/avax {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+        
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-avax-node;

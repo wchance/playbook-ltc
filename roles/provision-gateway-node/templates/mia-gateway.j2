@@ -59,6 +59,12 @@ server {
     ssl_prefer_server_ciphers on;
 
     location /ws/btc {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-btc-node;
@@ -74,6 +80,12 @@ server {
     }
 
     location /ws/eth {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+    
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-eth-node/;
@@ -89,6 +101,12 @@ server {
     }
 
     location /ws/ltc {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-ltc-node;
@@ -104,6 +122,12 @@ server {
     }
 
     location /ws/matic {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-matic-node/;
@@ -119,6 +143,12 @@ server {
     }
 
     location /ws/bch {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-bch-node;
@@ -134,6 +164,12 @@ server {
     }
 
     location /ws/avax {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-avax-node;
@@ -149,6 +185,12 @@ server {
     }
 
     location /ws/ada {
+
+        allow 132.148.135.151/32;
+        allow 23.161.96.0/24;
+        allow 190.194.199.64/28;
+        deny all;
+        
         rewrite /ws/ada/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-ada-node;
