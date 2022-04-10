@@ -60,13 +60,26 @@ server {
 
     location /ws/btc {
 
-	#Home Internet
-	allow 108.83.65.156/32;
-	#Chance Subnet
-        allow 23.161.96.0/24;
-	#Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+	allow 132.148.135.151/32;
+        #deny all;
+
+        rewrite /ws/btc/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-btc-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    # MASS WALLET API KEY
+    location /ws/btc/7b7bda36-3a91-4be7-83d9-5924a9251a10 {
 
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
@@ -84,16 +97,27 @@ server {
 
     location /ws/eth {
 	
-	#Home Internet
-	allow 108.83.65.156/32;
-	#Chance Subnet
-        allow 23.161.96.0/24;
-	#Navegalo Subnet
-        allow 190.194.199.64/28;
 	#WPB
 	allow 132.148.135.151/32;
-        deny all;
+        #deny all;
     
+        rewrite /ws/eth/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-eth-node/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    # MASS WALLET API KEY
+    location /ws/eth/82b7a32c-ffa5-4ca3-a708-5155da02b440 {
+	
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-eth-node/;
@@ -110,13 +134,26 @@ server {
 
     location /ws/ltc {
 
-	#Home Internet
-	allow 108.83.65.156/32;
-	#Chance Subnet
-        allow 23.161.96.0/24;
-	#Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+	allow 132.148.135.151/32;
+        #deny all;
+
+        rewrite /ws/ltc/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-ltc-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    # MASS WALLET API KEY
+    location /ws/ltc/82a3c3f7-b47f-4579-a4df-46ffde2bd6ee {
 
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
@@ -134,13 +171,26 @@ server {
 
     location /ws/matic {
 
-	#Home Internet
-	allow 108.83.65.156/32;
-	#Chance Subnet
-        allow 23.161.96.0/24;
-	#Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+	allow 132.148.135.151/32;
+        #deny all;
+
+        rewrite /ws/matic/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-matic-node/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    # MASS WALLET API KEY
+    location /ws/matic/86810b63-0227-4892-a009-63bd207f52eb {
 
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
@@ -158,13 +208,9 @@ server {
 
     location /ws/bch {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+	allow 132.148.135.151/32;
+        #deny all;
 
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
@@ -180,15 +226,29 @@ server {
         proxy_read_timeout 999999999;
     }
 
+    # MASS WALLET API KEY
+    location /ws/bch/6057d954-fcc2-4324-837d-edf965cb03bc {
+
+        rewrite /ws/bch/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-bch-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+
     location /ws/avax {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+	allow 132.148.135.151/32;
+        #deny all;
 
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
@@ -204,16 +264,47 @@ server {
         proxy_read_timeout 999999999;
     }
 
+    # MASS WALLET API KEY
+    location /ws/avax/d46f8c6c-ddef-494f-b2c9-a58416761fc3 {
+
+        rewrite /ws/avax/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-avax-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+
     location /ws/ada {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+	allow 132.148.135.151/32;
+        #deny all;
  
+        rewrite /ws/ada/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-ada-node;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    # MASS WALLET API KEY
+    location /ws/ada/c4ad0e42-32d3-4be5-b69a-807b81a99cb9 {
+
         rewrite /ws/ada/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-ada-node;
