@@ -124,7 +124,7 @@ all:
     gateway:
       hosts:
         mia-gw:
-          ansible_host: 199.245.60.190
+          ansible_host: 23.161.96.252
           ansible_connection: ssh
           ansible_port: 22
         sjo-gw:
