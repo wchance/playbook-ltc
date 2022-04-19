@@ -56,6 +56,9 @@ server {
         allow 190.194.199.64/28;
         deny all;
 
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/btc_htpasswd;
+
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-btc-node;
