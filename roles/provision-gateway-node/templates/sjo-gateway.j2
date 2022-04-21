@@ -51,16 +51,9 @@ server {
 
     location /ws/btc {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
-
-        auth_basic "Restricted Endpoint";
-        auth_basic_user_file /etc/htconfig/btc_htpasswd;
+	#WPB
+        allow 132.148.135.151/32;
+        #deny all;
 
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
@@ -78,15 +71,9 @@ server {
 
     location /ws/eth {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
 	#WPB
         allow 132.148.135.151/32;
-        deny all;
+        #deny all;
 
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
@@ -105,13 +92,9 @@ server {
 
     location /ws/ltc {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+        allow 132.148.135.151/32;
+        #deny all;
 
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
@@ -129,13 +112,9 @@ server {
 
     location /ws/matic {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+        allow 132.148.135.151/32;
+        #deny all;
 
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
@@ -153,13 +132,9 @@ server {
 
     location /ws/bch {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
+	#WPB
+        allow 132.148.135.151/32;
+        #deny all;
 
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
@@ -177,14 +152,10 @@ server {
 
     location /ws/avax {
 
-        #Home Internet
-        allow 108.83.65.156/32;
-        #Chance Subnet
-        allow 23.161.96.0/24;
-        #Navegalo Subnet
-        allow 190.194.199.64/28;
-        deny all;
- 
+	#WPB
+        allow 132.148.135.151/32;
+        #deny all;
+
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://sjo-avax-node;
