@@ -1,40 +1,90 @@
-upstream mia-btc-node {
+###################
+###### HTTPS ######
+###################
+
+upstream mia-btc-node-http {
     least_conn;
-    server 10.0.41.21:50003 fail_timeout=0;
+    server 10.0.41.21:50001 fail_timeout=0;
     keepalive 8;
 }
 
-upstream mia-eth-node {
+upstream mia-eth-node-http {
     least_conn;
-    server 10.0.41.5:8546 fail_timeout=0;
+    server 10.0.41.5:8545 fail_timeout=0;
     keepalive 8;
 }
 
-upstream mia-ltc-node {
+upstream mia-ltc-node-http {
     least_conn;
-    server 10.0.41.23:50003 fail_timeout=0;
+    server 10.0.41.23:50001 fail_timeout=0;
     keepalive 8;
 }
 
-upstream mia-matic-node {
+upstream mia-matic-node-http {
     least_conn;
-    server 10.0.41.6:8546 fail_timeout=0;
+    server 10.0.41.6:8545 fail_timeout=0;
     keepalive 8;
 }
 
-upstream mia-bch-node {
+upstream mia-bch-node-http {
     least_conn;
-    server 10.0.41.25:50003 fail_timeout=0;
+    server 10.0.41.25:50001 fail_timeout=0;
     keepalive 8;
 }
 
-upstream mia-avax-node {
+upstream mia-avax-node-http {
     least_conn;
     server 10.0.41.8:9650 fail_timeout=0;
     keepalive 8;
 }
 
-upstream mia-ada-node {
+upstream mia-ada-node-http {
+    least_conn;
+    server 10.0.41.9:1337 fail_timeout=0;
+    keepalive 8;
+}
+
+#################
+###### WSS ######
+#################
+
+upstream mia-btc-node-wss {
+    least_conn;
+    server 10.0.41.21:50003 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-eth-node-wss {
+    least_conn;
+    server 10.0.41.5:8546 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-ltc-node-wss {
+    least_conn;
+    server 10.0.41.23:50003 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-matic-node-wss {
+    least_conn;
+    server 10.0.41.6:8546 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-bch-node-wss {
+    least_conn;
+    server 10.0.41.25:50003 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-avax-node-wss {
+    least_conn;
+    server 10.0.41.8:9650 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-ada-node-wss {
     least_conn;
     server 10.0.41.9:1337 fail_timeout=0;
     keepalive 8;
@@ -58,15 +108,19 @@ server {
     ssl_ciphers  HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
 
-    location /ws/btc {
+    #####################
+    #### HTTPS ROUTE ####
+    #####################
 
-	#WPB
-	allow 132.148.135.151/32;
-        #deny all;
+    location /btc {
 
-        rewrite /ws/btc/(.*) /$1  break;
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/btc_htpasswd;
+
+        rewrite /btc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-btc-node;
+        proxy_pass http://mia-btc-node-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -78,15 +132,139 @@ server {
         proxy_read_timeout 999999999;
     }
 
-    # Authentication
-    location /btc {
-
+    location /eth {
+	
+        # Authenticate
         auth_basic "Restricted Endpoint";
-        auth_basic_user_file /etc/htconfig/btc_htpasswd;
-
-        rewrite /btc/(.*) /$1  break;
+        auth_basic_user_file /etc/htconfig/eth_htpasswd;
+    
+        rewrite /eth/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-btc-node;
+        proxy_pass http://mia-eth-node-http/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /ltc {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/ltc_htpasswd;
+
+        rewrite /ltc/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-ltc-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /matic {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/matic_htpasswd;
+
+        rewrite /matic/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-matic-node-http/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /bch {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/bch_htpasswd;
+
+        rewrite /bch/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-bch-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /avax {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/avax_htpasswd;
+
+        rewrite /avax/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-avax-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /ada {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/ada_htpasswd;
+ 
+        rewrite /ada/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-ada-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    ###################
+    #### WSS ROUTE ####
+    ###################
+
+    location /ws/btc {
+
+        #WPB
+        #allow 132.148.135.151/32;
+        #deny all;
+
+        rewrite /ws/btc/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-btc-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -100,13 +278,13 @@ server {
 
     location /ws/eth {
 	
-	#WPB
-	allow 132.148.135.151/32;
+        #WPB
+        #allow 132.148.135.151/32;
         #deny all;
     
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-eth-node/;
+        proxy_pass http://mia-eth-node-wss/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -120,13 +298,13 @@ server {
 
     location /ws/ltc {
 
-	#WPB
-	allow 132.148.135.151/32;
+        #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-ltc-node;
+        proxy_pass http://mia-ltc-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -140,13 +318,13 @@ server {
 
     location /ws/matic {
 
-	#WPB
-	allow 132.148.135.151/32;
+        #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-matic-node/;
+        proxy_pass http://mia-matic-node-wss/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -160,13 +338,13 @@ server {
 
     location /ws/bch {
 
-	#WPB
-	allow 132.148.135.151/32;
+        #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-bch-node;
+        proxy_pass http://mia-bch-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -180,13 +358,13 @@ server {
 
     location /ws/avax {
 
-	#WPB
-	allow 132.148.135.151/32;
+        #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-avax-node;
+        proxy_pass http://mia-avax-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -200,13 +378,13 @@ server {
 
     location /ws/ada {
 
-	#WPB
-	allow 132.148.135.151/32;
+        #WPB
+        #allow 132.148.135.151/32;
         #deny all;
  
         rewrite /ws/ada/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-ada-node;
+        proxy_pass http://mia-ada-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

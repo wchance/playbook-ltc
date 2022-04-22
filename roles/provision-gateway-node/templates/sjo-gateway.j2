@@ -1,38 +1,83 @@
-upstream sjo-btc-node {
+###################
+###### HTTPS ######
+###################
+
+upstream sjo-btc-node-http {
+    least_conn;
+    server 10.1.41.21:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-eth-node-http {
+    least_conn;
+    server 10.1.41.5:8545 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-ltc-node-http {
+    least_conn;
+    server 10.1.41.23:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-matic-node-http {
+    least_conn;
+    server 10.1.41.6:8545 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-bch-node-http {
+    least_conn;
+    server 10.1.41.25:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-avax-node-http {
+    least_conn;
+    server 10.1.41.8:9650 fail_timeout=0;
+    keepalive 8;
+}
+
+#################
+###### WSS ######
+#################
+
+upstream sjo-btc-node-wss {
     least_conn;
     server 10.1.41.21:50003 fail_timeout=0;
     keepalive 8;
 }
 
-upstream sjo-eth-node {
+upstream sjo-eth-node-wss {
     least_conn;
     server 10.1.41.5:8546 fail_timeout=0;
     keepalive 8;
 }
 
-upstream sjo-ltc-node {
+upstream sjo-ltc-node-wss {
     least_conn;
     server 10.1.41.23:50003 fail_timeout=0;
     keepalive 8;
 }
 
-upstream sjo-matic-node {
+upstream sjo-matic-node-wss {
     least_conn;
     server 10.1.41.6:8546 fail_timeout=0;
     keepalive 8;
 }
 
-upstream sjo-bch-node {
+upstream sjo-bch-node-wss {
     least_conn;
     server 10.1.41.25:50003 fail_timeout=0;
     keepalive 8;
 }
 
-upstream sjo-avax-node {
+upstream sjo-avax-node-wss {
     least_conn;
     server 10.1.41.8:9650 fail_timeout=0;
     keepalive 8;
 }
+
 
 server {
     listen 80;
@@ -49,15 +94,144 @@ server {
     ssl_certificate  /etc/nginx/ssl/ssl-cert-sjo-gw.crt;
     ssl_certificate_key /etc/nginx/ssl/private/ssl-cert-sjo-gw.key;
 
+    #####################
+    #### HTTPS ROUTE ####
+    #####################
+
+    location /btc {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/btc_htpasswd;
+
+        rewrite /btc/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-btc-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /eth {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/eth_htpasswd;
+
+        rewrite /eth/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-eth-node-http/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+
+    }
+
+    location /ltc {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/ltc_htpasswd;
+
+        rewrite /ltc/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-ltc-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /matic {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/matic_htpasswd;
+
+        rewrite /matic/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-matic-node-http/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /bch {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/bch_htpasswd;
+
+        rewrite /bch/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-bch-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /avax {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/avax_htpasswd;
+
+        rewrite /ws/avax/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-avax-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    ###################
+    #### WSS ROUTE ####
+    ###################
+
     location /ws/btc {
 
-	#WPB
-        allow 132.148.135.151/32;
+	    #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-btc-node;
+        proxy_pass http://sjo-btc-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -71,13 +245,13 @@ server {
 
     location /ws/eth {
 
-	#WPB
-        allow 132.148.135.151/32;
+	    #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-eth-node/;
+        proxy_pass http://sjo-eth-node-wss/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -92,13 +266,13 @@ server {
 
     location /ws/ltc {
 
-	#WPB
-        allow 132.148.135.151/32;
+	    #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-ltc-node;
+        proxy_pass http://sjo-ltc-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -112,13 +286,13 @@ server {
 
     location /ws/matic {
 
-	#WPB
-        allow 132.148.135.151/32;
+	    #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-matic-node/;
+        proxy_pass http://sjo-matic-node-wss/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -132,13 +306,13 @@ server {
 
     location /ws/bch {
 
-	#WPB
-        allow 132.148.135.151/32;
+	    #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-bch-node;
+        proxy_pass http://sjo-bch-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -152,13 +326,13 @@ server {
 
     location /ws/avax {
 
-	#WPB
-        allow 132.148.135.151/32;
+	    #WPB
+        #allow 132.148.135.151/32;
         #deny all;
 
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-avax-node;
+        proxy_pass http://sjo-avax-node-wss;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -169,5 +343,6 @@ server {
         proxy_buffer_size 64k;
         proxy_read_timeout 999999999;
     }
+
 
 }
