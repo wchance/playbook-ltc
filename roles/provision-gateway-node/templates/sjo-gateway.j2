@@ -225,9 +225,11 @@ server {
 
     location /ws/btc {
 
-	    #WPB
-        #allow 132.148.135.151/32;
-        #deny all;
+	#WPB
+        allow 132.148.135.151/32;
+	#Home Internet
+	allow 108.83.65.156/32;
+        deny all;
 
         rewrite /ws/btc/(.*) /$1  break;
         proxy_redirect off;
@@ -245,9 +247,11 @@ server {
 
     location /ws/eth {
 
-	    #WPB
-        #allow 132.148.135.151/32;
-        #deny all;
+	#WPB
+        allow 132.148.135.151/32;
+	#Home Internet
+	allow 108.83.65.156/32;
+        deny all;
 
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
@@ -266,9 +270,11 @@ server {
 
     location /ws/ltc {
 
-	    #WPB
-        #allow 132.148.135.151/32;
-        #deny all;
+	#WPB
+        allow 132.148.135.151/32;
+	#Home Internet
+	allow 108.83.65.156/32;
+        deny all;
 
         rewrite /ws/ltc/(.*) /$1  break;
         proxy_redirect off;
@@ -286,9 +292,11 @@ server {
 
     location /ws/matic {
 
-	    #WPB
-        #allow 132.148.135.151/32;
-        #deny all;
+	#WPB
+        allow 132.148.135.151/32;
+	#Home Internet
+	allow 108.83.65.156/32;
+        deny all;
 
         rewrite /ws/matic/(.*) /$1  break;
         proxy_redirect off;
@@ -306,9 +314,11 @@ server {
 
     location /ws/bch {
 
-	    #WPB
-        #allow 132.148.135.151/32;
-        #deny all;
+	#WPB
+        allow 132.148.135.151/32;
+	#Home Internet
+	allow 108.83.65.156/32;
+        deny all;
 
         rewrite /ws/bch/(.*) /$1  break;
         proxy_redirect off;
@@ -326,9 +336,11 @@ server {
 
     location /ws/avax {
 
-	    #WPB
-        #allow 132.148.135.151/32;
-        #deny all;
+	#WPB
+        allow 132.148.135.151/32;
+	#Home Internet
+	allow 108.83.65.156/32;
+        deny all;
 
         rewrite /ws/avax/(.*) /$1  break;
         proxy_redirect off;
