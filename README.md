@@ -162,6 +162,19 @@ The role [provision-gateway-node](./roles/provision-gateway-node) is the one
 responsible for provisioning/configuring Gateway Nodes or the reverse-proxy
 servers.
 
+SPECIAL NEED: Create the following files in order for the Nginx Basic Auth to work for all HTTP access.
+Note that if there's a new endpoint added to the gateway config, it's expected that the htpasswd file for it exists.
+
+```
+sudo htpasswd -c /etc/htconfig/ada_htpasswd YOUR_USER
+sudo htpasswd -c /etc/htconfig/avax_htpasswd YOUR_USER
+sudo htpasswd -c /etc/htconfig/bch_htpasswd YOUR_USER
+sudo htpasswd -c /etc/htconfig/matic_htpasswd YOUR_USER
+sudo htpasswd -c /etc/htconfig/ltc_htpasswd YOUR_USER
+sudo htpasswd -c /etc/htconfig/eth_htpasswd YOUR_USER
+sudo htpasswd -c /etc/htconfig/btc_htpasswd YOUR_USER
+```
+
 - Install MIA Gateway
 
 ```
