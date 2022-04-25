@@ -1,0 +1,26 @@
+---
+
+- name: Configure Defaults
+  shell: |
+    # Allow OS to update security updates unattended
+    sudo apt install unattended-upgrades
+    sudo dpkg-reconfigure --priority=low unattended-upgrades
+
+    # useradd wchance
+    useradd wchance -m -s /bin/bash -c "administrator user"
+    usermod -aG sudo,adm wchance
+
+    #create .ssh/authorized_keys
+    mkdir ~/.ssh
+    touch ~/.ssh/authorized_keys
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKZEq5f+mjvEOCres2MhrJzQ7oyGWki7FqN67tjBWfG william@office" >> ~/.ssh/authorized_keys
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMrv38Cxft2Z4TAC2kG2SYkCgt16ss77zuCXKymkLesV william@mia-ansible-controller" >> ~/.ssh/authorized_keys
+    echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOi3bMlHqSrrs8WRFpgH2Bg9oBu70DPa9dtBqwY05R7o william@sjo-ansible-controller" >> ~/.ssh/authorized_keys
+
+    #edit sshd_config
+    PermitRootLogin no
+    PasswordAuthentication no
+    PermitEmptyPasswords no
+
+    #restart ssh
+    service sshd restart
