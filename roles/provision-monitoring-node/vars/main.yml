@@ -2,7 +2,7 @@
 prometheus_serviceName: prometheus
 prometheus_userId: prometheus
 prometheus_groupId: prometheus
-prometheus_exec_command: /usr/local/bin/prometheus --config.file=/etc/prometheus/prometheus.conf --storage.tsdb.path=/data/prometheus --storage.tsdb.retention=2d
+prometheus_exec_command: /usr/local/bin/prometheus --web.external-url=/prometheus/ --web.listen-address=127.0.0.1:9090  --config.file=/etc/prometheus/prometheus.conf --storage.tsdb.path=/data/prometheus --storage.tsdb.retention=2d
 prometheus_version: 2.35.0
 
 blackbox_serviceName: blackbox_exporter

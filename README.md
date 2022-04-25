@@ -254,3 +254,10 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ```
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-node-exporter" -u <user> --private-key <path-to-key> -kK -vvv
 ```
+
+- Install Nginx Proxy
+> Note: Nginx only needs to be installed to the monitoring node running Prometheus. SSL Cert is managed by Certbot. Make sure to create the htpasswd for /etc/htconfig/prometheus_htpasswd.
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-nginx-proxy" -u <user> --private-key <path-to-key> -kK -vvv
+```

@@ -53,3 +53,14 @@
   tags:
     - never
     - install-grafana
+
+- name: Install Nginx Proxy
+  include_tasks:
+    file: nginx-proxy.yml
+    apply:
+      tags:
+        - never
+        - install-nginx-proxy
+  tags:
+    - never
+    - install-nginx-proxy

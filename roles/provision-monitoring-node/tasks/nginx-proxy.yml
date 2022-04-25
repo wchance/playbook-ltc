@@ -1,0 +1,22 @@
+---
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Add sites-available
+  ansible.builtin.template:
+    src: nginx-proxy-config.j2
+    dest: /etc/nginx/sites-available/nginx-proxy-config.conf
+
+- name: Add sites-enable 
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/nginx-proxy-config.conf
+    dest: /etc/nginx/sites-enabled/nginx-proxy-config.conf
+    state: link
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted

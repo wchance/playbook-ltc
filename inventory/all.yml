@@ -131,6 +131,12 @@ all:
           ansible_host: 190.184.199.78
           ansible_connection: ssh
           ansible_port: 22
+    monitoring:
+      hosts:
+        mon1:
+          ansible_host: 157.230.48.54
+          ansible_connection: ssh
+          ansible_port: 22
     testing:
       hosts:
         test-node:

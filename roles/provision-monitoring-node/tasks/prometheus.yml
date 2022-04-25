@@ -65,6 +65,10 @@
     src: prometheus-systemd-config.j2
     dest: /etc/systemd/system/prometheus.service
 
+- name: Reload Daemon
+  shell: systemctl daemon-reload
+  become: true
+
 - name: Start prometheus service
   service:
     name: prometheus
