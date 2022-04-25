@@ -133,10 +133,10 @@ all:
           ansible_port: 22
     testing:
       hosts:
-        test-ada-node:
-          ansible_host: 199.245.60.181
+        test-node:
+          ansible_host: 147.182.254.14
           ansible_connection: ssh
-          ansible_port: 30222
+          ansible_port: 22
   vars:
   ansible_user: wchance
   ansible_become: yes

@@ -214,3 +214,43 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ogmios" -u <user> --private-key <path-to-key> -kK -vvv
 ```
+
+# Monitoring Node
+
+The role [provision-monitoring-node](./roles/provision-monitoring-node/) is the one 
+responsible for provisioning/configuring Promethues, Grafana, Node Exporter, Blackbox Exporter, Alert Manager
+
+- Install Prometheus
+> Note: Prometheus only needs to be installed to the monitoring node.
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-prometheus" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Install Grafana
+> Note: Grafana only needs to be installed to the monitoring node running Prometheus.
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-grafana" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Install AlertManager
+> Note: AlertManager only needs to be installed to the monitoring node running Prometheus.
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-alertmanager" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Install Blackbox Exporter
+> Note: Blackbox Exporter only needs to be installed to the monitoring node running Prometheus.
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-blackbox-exporter" -u <user> --private-key <path-to-key> -kK -vvv
+```
+
+- Install Node Exporter
+> Note: Node Exporter needs to be installed to every host you want to monitor with Prometheus.
+
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-node-exporter" -u <user> --private-key <path-to-key> -kK -vvv
+```
