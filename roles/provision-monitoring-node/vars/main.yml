@@ -23,4 +23,4 @@ nodeexporter_groupId: node_exporter
 nodeexporter_exec_command: /usr/local/bin/node_exporter
 nodeexporter_version: 1.3.1
 
-grafana_version: 5.4.3
+grafana_version: 8.5.0
