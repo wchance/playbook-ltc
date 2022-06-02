@@ -2,21 +2,15 @@
 ###### HTTPS ######
 ###################
 
-upstream sjo-bch-electrumx-http {
-    least_conn;
-    server 10.1.41.25:50001 fail_timeout=0;
-    keepalive 8;
-}
-
 upstream sjo-bch-node-http {
     least_conn;
     server 10.1.41.24:8332 fail_timeout=0;
     keepalive 8;
 }
 
-upstream sjo-btc-electrumx-http {
+upstream sjo-bch-electrumx-http {
     least_conn;
-    server 10.1.41.21:50001 fail_timeout=0;
+    server 10.1.41.25:50001 fail_timeout=0;
     keepalive 8;
 }
 
@@ -26,15 +20,27 @@ upstream sjo-btc-node-http {
     keepalive 8;
 }
 
-upstream sjo-ltc-electrumx-http {
+upstream sjo-btc-electrumx-http {
     least_conn;
-    server 10.1.41.23:50001 fail_timeout=0;
+    server 10.1.41.21:50001 fail_timeout=0;
     keepalive 8;
 }
 
 upstream sjo-ltc-node-http {
     least_conn;
     server 10.1.41.22:8332 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-ltc-electrumx-http {
+    least_conn;
+    server 10.1.41.23:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-avax-node-http {
+    least_conn;
+    server 10.1.41.8:9650 fail_timeout=0;
     keepalive 8;
 }
 
@@ -47,12 +53,6 @@ upstream sjo-eth-node-http {
 upstream sjo-matic-node-http {
     least_conn;
     server 10.1.41.6:8545 fail_timeout=0;
-    keepalive 8;
-}
-
-upstream sjo-avax-node-http {
-    least_conn;
-    server 10.1.41.8:9650 fail_timeout=0;
     keepalive 8;
 }
 
