@@ -2,9 +2,39 @@
 ###### HTTPS ######
 ###################
 
-upstream sjo-btc-node-http {
+upstream sjo-bch-electrumx-http {
+    least_conn;
+    server 10.1.41.25:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-bch-node-http {
+    least_conn;
+    server 10.1.41.24:8332 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-btc-electrumx-http {
     least_conn;
     server 10.1.41.21:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-btc-node-http {
+    least_conn;
+    server 10.1.41.20:8332 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-ltc-electrumx-http {
+    least_conn;
+    server 10.1.41.23:50001 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream sjo-ltc-node-http {
+    least_conn;
+    server 10.1.41.22:8332 fail_timeout=0;
     keepalive 8;
 }
 
@@ -14,21 +44,9 @@ upstream sjo-eth-node-http {
     keepalive 8;
 }
 
-upstream sjo-ltc-node-http {
-    least_conn;
-    server 10.1.41.23:50001 fail_timeout=0;
-    keepalive 8;
-}
-
 upstream sjo-matic-node-http {
     least_conn;
     server 10.1.41.6:8545 fail_timeout=0;
-    keepalive 8;
-}
-
-upstream sjo-bch-node-http {
-    least_conn;
-    server 10.1.41.25:50001 fail_timeout=0;
     keepalive 8;
 }
 
@@ -98,6 +116,20 @@ server {
     #### HTTPS ROUTE ####
     #####################
 
+    location /btc/node {
+
+        rewrite /btc/node/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://sjo-btc-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+
     location /btc {
 
         # Authenticate
@@ -106,7 +138,7 @@ server {
 
         rewrite /btc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-btc-node-http;
+        proxy_pass http://sjo-btc-electrumx-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -147,7 +179,7 @@ server {
 
         rewrite /ltc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-ltc-node-http;
+        proxy_pass http://sjo-ltc-electrumx-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -187,7 +219,7 @@ server {
 
         rewrite /bch/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://sjo-bch-node-http;
+        proxy_pass http://sjo-bch-electrumx-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
