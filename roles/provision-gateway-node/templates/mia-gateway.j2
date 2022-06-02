@@ -4,6 +4,12 @@
 
 upstream mia-btc-node-http {
     least_conn;
+    server 10.0.41.20:8332 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-btc-electrumx-http {
+    least_conn;
     server 10.0.41.21:50001 fail_timeout=0;
     keepalive 8;
 }
@@ -14,7 +20,7 @@ upstream mia-eth-node-http {
     keepalive 8;
 }
 
-upstream mia-ltc-node-http {
+upstream mia-ltc-electrumx-http {
     least_conn;
     server 10.0.41.23:50001 fail_timeout=0;
     keepalive 8;
@@ -26,7 +32,7 @@ upstream mia-matic-node-http {
     keepalive 8;
 }
 
-upstream mia-bch-node-http {
+upstream mia-bch-electrumx-http {
     least_conn;
     server 10.0.41.25:50001 fail_timeout=0;
     keepalive 8;
@@ -112,6 +118,22 @@ server {
     #### HTTPS ROUTE ####
     #####################
 
+    location /btc/node {
+
+        rewrite /btc/node/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-btc-node-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
     location /btc {
 
         # Authenticate
@@ -120,7 +142,7 @@ server {
 
         rewrite /btc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-btc-node-http;
+        proxy_pass http://mia-btc-electrumx-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -160,7 +182,7 @@ server {
 
         rewrite /ltc/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-ltc-node-http;
+        proxy_pass http://mia-ltc-electrumx-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -200,7 +222,7 @@ server {
 
         rewrite /bch/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-bch-node-http;
+        proxy_pass http://mia-bch-electrumx-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
