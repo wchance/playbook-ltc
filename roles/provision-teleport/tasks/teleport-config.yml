@@ -1,0 +1,10 @@
+---
+
+- name: Teleport configuration 
+  become: true
+  command: teleport configure --acme --acme-email=example@email.com --cluster-name=tele.wedevelop.io -o file
+  #replace example@email.com with email address used for notifications
+
+- name: Teleport configuration complete
+  debug: 
+    msg: Configuration file succesfull

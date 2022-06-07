@@ -1,0 +1,10 @@
+---
+
+- name: Install prerequisites
+  include_task: prerequisites.yml
+
+- name: Install teleport-config
+  include_task: teleport-config.yml
+
+- name: Install teleport-installation
+  include_task: teleport-installation.yml
