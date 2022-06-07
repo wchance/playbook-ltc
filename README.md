@@ -15,4 +15,3 @@ This is the gathering of many playbooks that have been coded for our ecosystem
 ## **Other Playbooks**
 
 [**Other Playbooks**](other.md)
-

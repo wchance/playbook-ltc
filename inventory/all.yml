@@ -137,10 +137,10 @@ all:
           ansible_host: 157.230.48.54
           ansible_connection: ssh
           ansible_port: 22
-    testing:
+    teleport:
       hosts:
-        test-node:
-          ansible_host: 147.182.254.14
+        mia-teleport:
+          ansible_host: 10.0.43.40
           ansible_connection: ssh
           ansible_port: 22
   vars:
