@@ -1,0 +1,21 @@
+---
+#Install necessary prerequisites
+
+- name: Log prerequisites instalatation start
+  debug:
+    msg: Beginning of the instalation of prerequisites
+
+- name: Prerequisites instalation
+  become: true
+  apt: 
+    pkg: 
+      -curl
+      -python3-pip
+      -net-tools
+    state: latest
+    update-cache: true
+
+- name: Log prerequisites instalatation completion
+  debug: 
+    msg: Finishing prerequisites instalation
+  

@@ -1,10 +1,10 @@
 ---
 
 - name: Install prerequisites
-  include_task: prerequisites.yml
+  include_task: install-dependency-teleport.yml
 
 - name: Install teleport-config
-  include_task: teleport-config.yml
+  include_task: config-teleport.yml
 
 - name: Install teleport-installation
-  include_task: teleport-installation.yml
+  include_task: install-teleport.yml
