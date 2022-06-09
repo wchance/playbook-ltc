@@ -17,7 +17,6 @@ The `ansible_user` for the remote host should be added to visudo with
 ![BTC](./images/btc%402x.png)
 ## **Bitcoin (BTC) Node**
 
-
 The role [provision-btc-node](./roles/provision-btc-node) is the one responsible
 for provisioning/configuring BTC Nodes. This role has been tested in Ubuntu
 LTS-18 abd LTS-20.
@@ -25,10 +24,10 @@ LTS-18 abd LTS-20.
 :pushpin: Before running the playbooks.yml, make sure to update the
 `ansible_user` variable in the [inventory](./inventory/all.yml)
 
-- Installing Bitcoin Core
+- Install Bitcoin Core
 
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btccore" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btc-core" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 - Checking Blocks
@@ -37,12 +36,17 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 ANSIBLE_STDOUT_CALLBACK=unixy ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "btc-block-checker" -u <user> --private-key <path-to-key> -kK
 ```
 
-- Install Electrum
+## **Bitcoin (BTC) Electrumx**
+- Install ElectrumX dependencies
 
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum-btc" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btc-electrumx-dep" -u <user> --private-key <path-to-key> -kK -vvv
+```
 
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btc-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+- Install ElectrumX
+  
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-btc-electrumx" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 ![LTC](./images/ltc@2x.png)
 ## **Litecoin (LTC) Node**
@@ -57,15 +61,19 @@ LTS-18 abd LTS-20.
 - Installing Litecoin Core
 
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltccore" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltc-core" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
-- Install Electrum
+- Install ElectrumX dependencies
 
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum-ltc" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltc-electrumx-dep" -u <user> --private-key <path-to-key> -kK -vvv
+```
 
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltc-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+- Install ElectrumX
+  
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-ltc-electrumx" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 ![BCH](./images/bch@2x.png)
@@ -78,18 +86,22 @@ LTS-18 abd LTS-20.
 :pushpin: Before running the playbooks.yml, make sure to update the
 `ansible_user` variable in the [inventory](./inventory/all.yml)
 
-- Installing BitcoinCash Core
+- Install BitcoinCash Core
 
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-bchcore" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-bch-core" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
-- Install Electrum
+- Install ElectrumX dependencies
 
 ```
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-dependency-electrum-bch" -u <user> --private-key <path-to-key> -kK -vvv
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-bch-electrumx-dep" -u <user> --private-key <path-to-key> -kK -vvv
+```
 
-ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-bch-electrum" -u <user> --private-key <path-to-key> -kK -vvv
+- Install ElectrumX
+  
+```
+ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "install-bch-electrumx" -u <user> --private-key <path-to-key> -kK -vvv
 ```
 
 &nbsp;
