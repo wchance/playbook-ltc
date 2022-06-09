@@ -2,33 +2,33 @@
 
 - name: Install Dependency
   include_tasks: 
-    file: install-dependency.yml
+    file: install-electrumx-dep.yml
     apply:
       tags: 
         - never
-        - install-dependency-electrum-btc
+        - install-btc-electrumx
   tags:
     - never 
-    - install-dependency-electrum-btc
+    - install-btc-electrumx-dep
 
 - name: Install Btccore
   include_tasks: 
-    file: install-btccore.yml
+    file: install-btc-core.yml
     apply:
       tags: 
         - never
-        - install-btccore
+        - install-btc-core
   tags:
     - never 
-    - install-btccore
+    - install-btc-core
 
 - name: Install Electrumx
   include_tasks: 
-    file: install-electrum.yml
+    file: install-electrumx.yml
     apply:
       tags: 
         - never
-        - install-btc-electrum
+        - install-btc-electrumx
   tags:
     - never 
-    - install-btc-electrum
+    - install-btc-electrumx
