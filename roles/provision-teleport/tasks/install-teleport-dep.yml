@@ -1,0 +1,29 @@
+---
+#Install Teleport Dependencies
+
+- name: Install update
+  apt:
+    update_cache: yes
+
+- name: Log start of dependency install
+  debug:
+    msg: Start of Teleport dependencies install
+
+- name: Install Curl
+  apt:
+    name: curl
+    state: present
+
+- name: Install Python3 PIP
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install Net-Tools
+  apt:
+    name: net-tools
+    state: present
+
+- name: Log end of dependency install
+  debug: 
+    msg: End Teleport Dependencies install

@@ -1,10 +1,34 @@
 ---
 
-- name: Install prerequisites
-  include_task: install-dependency-teleport.yml
+- name: Install Teleport dependencies
+  include_tasks:
+    file: install-teleport-dep.yml
+    apply:
+      tags:
+        - never
+        - install-teleport-dep
+  tags:
+    - never
+    - install-teleport-dep
 
-- name: Install teleport-config
-  include_task: config-teleport.yml
+- name: Install Teleport
+  include_tasks: 
+    file: install-teleport.yml
+    apply:
+      tags:
+        - never
+        - install-teleport
+  tags:
+    - never
+    - install-teleport
 
-- name: Install teleport-installation
-  include_task: install-teleport.yml
+- name: Configure Teleport
+  include_tasks: 
+    file: config-teleport.yml
+    apply:
+      tags:
+        - never
+        - config-teleport
+  tags:
+    - never
+    - config-teleport

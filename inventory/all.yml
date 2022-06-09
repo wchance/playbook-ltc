@@ -5,36 +5,6 @@ all:
       hosts:
         localhost:
           ansible_connection: local
-    eth-nodes:
-      hosts:
-        mia-eth-node:
-          ansible_host: 10.0.41.5
-          ansible_connection: ssh
-          ansible_port: 22
-        sjo-eth-node:
-          ansible_host: 10.1.41.5
-          ansible_connection: ssh
-          ansible_port: 22
-    matic-nodes:
-      hosts:
-        mia-matic-node:
-          ansible_host: 10.0.41.6
-          ansible_connection: ssh
-          ansible_port: 22
-        sjo-matic-node:
-          ansible_host: 10.1.41.6
-          ansible_connection: ssh
-          ansible_port: 22
-    bsc-nodes:
-      hosts:
-        mia-bsc-node:
-          ansible_host: 10.0.41.7
-          ansible_connection: ssh
-          ansible_port: 22
-        sjo-bsc-node:
-          ansible_host: 10.1.41.7
-          ansible_connection: ssh
-          ansible_port: 22
     btc-nodes:
       hosts:
         mia-btc-node:
@@ -101,6 +71,36 @@ all:
           ansible_connection: ssh
           ansible_port: 22
           bch_node_ip: 10.1.41.24
+    eth-nodes:
+      hosts:
+        mia-eth-node:
+          ansible_host: 10.0.41.5
+          ansible_connection: ssh
+          ansible_port: 22
+        sjo-eth-node:
+          ansible_host: 10.1.41.5
+          ansible_connection: ssh
+          ansible_port: 22
+    matic-nodes:
+      hosts:
+        mia-matic-node:
+          ansible_host: 10.0.41.6
+          ansible_connection: ssh
+          ansible_port: 22
+        sjo-matic-node:
+          ansible_host: 10.1.41.6
+          ansible_connection: ssh
+          ansible_port: 22
+    bsc-nodes:
+      hosts:
+        mia-bsc-node:
+          ansible_host: 10.0.41.7
+          ansible_connection: ssh
+          ansible_port: 22
+        sjo-bsc-node:
+          ansible_host: 10.1.41.7
+          ansible_connection: ssh
+          ansible_port: 22
     avax-nodes:
       hosts:
         mia-avax-node:
