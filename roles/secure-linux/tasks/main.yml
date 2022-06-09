@@ -1,0 +1,12 @@
+---
+
+- name: Patch Linux OS
+  include_tasks:
+    file: patch-linux.yml
+    apply:
+      tags:
+        - never
+        - patch-linux
+  tags:
+    - never
+    - patch-linux
