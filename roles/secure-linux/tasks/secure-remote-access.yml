@@ -5,24 +5,24 @@
 
 - name: Add local user
   user:
-    name: admin
+    name: wchance
     group: admin
     shell: /bin/bash
-    home: /home/admin
+    home: /home/wchance
     create_home: yes
     state: present
 
 - name: Add SSH public key for user
   authorized_key:
-    user: admin
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    user: wchance
+    key: "{{ lookup('file', '~/.ssh/authorized_keys') }}"
     state: present
 
 - name: Add sudoer rule for local user
   copy:
-    dest: /etc/sudoers.d/admin
-    src: etc/sudoers.d/admin
-    owner: root
+    dest: /etc/sudoers.d/wchance
+    src: /etc/sudoers.d/wchance
+    owner: wchance
     group: root
     mode: 0440
     validate: /usr/sbin/visudo -csf %s

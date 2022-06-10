@@ -10,3 +10,14 @@
   tags:
     - never
     - patch-linux
+
+- name: Secure remote access
+  include_tasks:
+    file: secure-remote-access.yml
+    apply:
+      tags:
+        - never
+        - secure-remote-access
+  tags:
+    - never
+    - secure-remote-access
