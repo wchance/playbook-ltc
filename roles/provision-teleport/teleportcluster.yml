@@ -1,0 +1,65 @@
+---
+- hosts: teleport
+  become: yes
+  vars:
+          fqdn_hostname: "teleport.wedevelop.io"
+          email: "william@wedevelop.io"
+          tp:
+                  keyurl: "https://deb.releases.teleport.dev/teleport-pubkey.asc"
+                  repo: "deb https://deb.releases.teleport.dev stable main"
+                  configfile: "/etc/teleport.yaml"
+                  adminuser: "teleport-admin"
+                  adminuser_roles: "editor,access"
+                  adminuser_logins: "root,wchance"
+  tasks:
+          - name: ensure python3 is installed
+            apt:
+                    name: python3
+                    state: present
+          - name: teleport signing key is installed
+            ansible.builtin.apt_key:
+                    url: "{{ tp.keyurl }}"
+                    state: present
+          - name: teleport apt repository 
+            ansible.builtin.apt_repository:
+                    repo: "{{ tp.repo }}"
+                    state: present
+                    update_cache: yes
+          - name: ensure teleport is installed
+            apt:
+                    name: teleport
+                    state: present
+          - name: test to see if teleport config file exists
+            stat:
+                    path: "{{ tp.configfile }}"
+            register: config_exists
+
+          - name: ensure teleport acme configuration is done
+            shell: teleport configure --acme --acme-email="{{ email }}" --cluster-name="{{ fqdn_hostname }}" -o "{{ tp.configfile }}"
+            when: not config_exists.stat.exists
+
+          - name: ensure teleport service is enabled and running
+            ansible.builtin.service:
+                    name: teleport
+                    state: started
+                    enabled: yes
+
+          - name: wait 60 seconds to ensure proxy is up before generating login link
+            pause:
+              minutes: 1
+
+          - name: check if adminuser exists
+            shell: sudo tctl users ls
+            register: tctl_out
+
+          - name: generate admin registration link
+            shell: tctl users add {{ tp.adminuser }} --roles={{ tp.adminuser_roles }} --logins={{ tp.adminuser_logins }}
+            register: admin_result
+            when: tctl_out != "No users found"
+
+
+          - name: print the admin_user message and login link
+            debug:
+                    msg: "{{ admin_result.stdout }}"
+            when: tctl_out != "No users found"
+
