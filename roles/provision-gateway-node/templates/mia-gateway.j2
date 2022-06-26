@@ -2,6 +2,9 @@
 ###### HTTPS ######
 ###################
 
+# BITCOIN BASED NODES
+#####################
+
 upstream mia-btc-node-http {
     least_conn;
     server 10.0.41.20:8332 fail_timeout=0;
@@ -14,9 +17,9 @@ upstream mia-btc-electrumx-http {
     keepalive 8;
 }
 
-upstream mia-eth-node-http {
+upstream mia-ltc-node-http {
     least_conn;
-    server 10.0.41.5:8545 fail_timeout=0;
+    server 10.0.41.22:9332 fail_timeout=0;
     keepalive 8;
 }
 
@@ -26,9 +29,9 @@ upstream mia-ltc-electrumx-http {
     keepalive 8;
 }
 
-upstream mia-matic-node-http {
+upstream mia-bch-node-http {
     least_conn;
-    server 10.0.41.6:8545 fail_timeout=0;
+    server 10.0.41.24:8332 fail_timeout=0;
     keepalive 8;
 }
 
@@ -38,11 +41,29 @@ upstream mia-bch-electrumx-http {
     keepalive 8;
 }
 
+# ETHEREUM BASED NODES
+######################
+
+upstream mia-eth-node-http {
+    least_conn;
+    server 10.0.41.5:8545 fail_timeout=0;
+    keepalive 8;
+}
+
+upstream mia-matic-node-http {
+    least_conn;
+    server 10.0.41.6:8545 fail_timeout=0;
+    keepalive 8;
+}
+
 upstream mia-avax-node-http {
     least_conn;
     server 10.0.41.8:9650 fail_timeout=0;
     keepalive 8;
 }
+
+# OTHER NODES
+######################
 
 upstream mia-ada-node-http {
     least_conn;
@@ -118,6 +139,10 @@ server {
     #### HTTPS ROUTE ####
     #####################
 
+
+    # BITCOIN BASED NODES
+    #####################
+
     location /btc/node {
 
         rewrite /btc/node/(.*) /$1  break;
@@ -154,15 +179,11 @@ server {
         proxy_read_timeout 999999999;
     }
 
-    location /eth {
-	
-        # Authenticate
-        auth_basic "Restricted Endpoint";
-        auth_basic_user_file /etc/htconfig/eth_htpasswd;
-    
-        rewrite /eth/(.*) /$1  break;
+    location /ltc/node {
+
+        rewrite /ltc/node/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-eth-node-http/;
+        proxy_pass http://mia-ltc-node-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -170,7 +191,6 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_buffers 8 32k;
-        proxy_buffer_size 64k;
         proxy_read_timeout 999999999;
     }
 
@@ -190,19 +210,14 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_buffers 8 32k;
-        proxy_buffer_size 64k;
         proxy_read_timeout 999999999;
     }
 
-    location /matic {
+    location /bch/node {
 
-        # Authenticate
-        auth_basic "Restricted Endpoint";
-        auth_basic_user_file /etc/htconfig/matic_htpasswd;
-
-        rewrite /matic/(.*) /$1  break;
+        rewrite /bch/node/(.*) /$1  break;
         proxy_redirect off;
-        proxy_pass http://mia-matic-node-http/;
+        proxy_pass http://mia-bch-node-http;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -223,6 +238,49 @@ server {
         rewrite /bch/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-bch-electrumx-http;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    # ETHEREUM BASED NODES
+    ######################
+
+    location /eth {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/eth_htpasswd;
+
+        rewrite /eth/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-eth-node-http/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_buffers 8 32k;
+        proxy_buffer_size 64k;
+        proxy_read_timeout 999999999;
+    }
+
+    location /matic {
+
+        # Authenticate
+        auth_basic "Restricted Endpoint";
+        auth_basic_user_file /etc/htconfig/matic_htpasswd;
+
+        rewrite /matic/(.*) /$1  break;
+        proxy_redirect off;
+        proxy_pass http://mia-matic-node-http/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -259,7 +317,7 @@ server {
         # Authenticate
         auth_basic "Restricted Endpoint";
         auth_basic_user_file /etc/htconfig/ada_htpasswd;
- 
+
         rewrite /ada/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-ada-node-http;
@@ -282,8 +340,8 @@ server {
 
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
 
         rewrite /ws/btc/(.*) /$1  break;
@@ -301,13 +359,13 @@ server {
     }
 
     location /ws/eth {
-	
+
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
-    
+
         rewrite /ws/eth/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-eth-node-wss/;
@@ -326,8 +384,8 @@ server {
 
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
 
         rewrite /ws/ltc/(.*) /$1  break;
@@ -348,8 +406,8 @@ server {
 
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
 
         rewrite /ws/matic/(.*) /$1  break;
@@ -370,8 +428,8 @@ server {
 
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
 
         rewrite /ws/bch/(.*) /$1  break;
@@ -392,8 +450,8 @@ server {
 
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
 
         rewrite /ws/avax/(.*) /$1  break;
@@ -414,10 +472,10 @@ server {
 
         #WPB
         allow 132.148.135.151/32;
-	#Home Internet
-	allow 108.83.65.156/32;
+        #Home Internet
+        allow 108.83.65.156/32;
         #deny all;
- 
+
         rewrite /ws/ada/(.*) /$1  break;
         proxy_redirect off;
         proxy_pass http://mia-ada-node-wss;
@@ -431,5 +489,4 @@ server {
         proxy_buffer_size 64k;
         proxy_read_timeout 999999999;
     }
-
 }
