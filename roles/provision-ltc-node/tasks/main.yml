@@ -2,33 +2,33 @@
 
 - name: Install Dependency
   include_tasks: 
-    file: install-dependency.yml
+    file: install-ltc-electrumx-dep.yml
     apply:
       tags: 
         - never
-        - install-dependency-electrum-ltc
+        - install-ltc-electrumx-dep
   tags:
     - never 
-    - install-dependency-electrum-ltc
+    - install-ltc-electrumx-dep
 
-- name: Install Ltccore
+- name: Install LTC core
   include_tasks: 
-    file: install-ltccore.yml
+    file: install-ltc-core.yml
     apply:
       tags: 
         - never
-        - install-ltccore
+        - install-ltc-core
   tags:
     - never 
-    - install-ltccore
+    - install-ltc-core
 
-- name: Install Electrum
+- name: Install Electrumx
   include_tasks: 
-    file: install-electrum.yml
+    file: install-ltc-electrumx.yml
     apply:
       tags: 
         - never
-        - install-ltc-electrum
+        - install-ltc-electrumx
   tags:
     - never 
-    - install-ltc-electrum
+    - install-ltc-electrumx
