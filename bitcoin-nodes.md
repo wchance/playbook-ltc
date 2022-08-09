@@ -53,7 +53,7 @@ ansible-playbook playbooks.yml -i inventory/all.yml -l <host-name> --tags "insta
 
 The role [provision-ltc-node](./roles/provision-ltc-node) is the one responsible
 for provisioning/configuring LTC Nodes. This role has been tested in Ubuntu
-LTS-18 abd LTS-20.
+LTS-20.
 
 :pushpin: Before running the playbooks.yml, make sure to update the
 `ansible_user` variable in the [inventory](./inventory/all.yml)
