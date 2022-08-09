@@ -1,5 +1,5 @@
-geth_binary_version: geth-linux-amd64-1.10.20-8f2416a8
-geth_binary_checksum: md5:d1793b47659cb6b1bb753b6bae2792bb
+geth_binary_version: geth-linux-amd64-1.10.19-23bee162
+geth_binary_checksum: md5:500813df8d609cbb6b0037b10ca0fab9
 geth_data_path: /home/{{ ansible_user }}/.ethereum
 geth_sync_mode: full
 geth_cache: 4096
