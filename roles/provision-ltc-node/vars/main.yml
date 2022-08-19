@@ -1,8 +1,8 @@
 ---
 
 ltc_node_ip: 
-litecoin_core_version: litecoin-0.18.1
-litecoin_version_shasum: sha256:ca50936299e2c5a66b954c266dcaaeef9e91b2f5307069b9894048acf3eb5751
+litecoin_core_version: litecoin-0.21.2.1
+litecoin_version_shasum: sha256:6e545d1ef0842b9c4ecaf2e22b43f17fd3fba73599b0d6cc1db0c9310f1a74ff
 litecoin_data_path: /home/{{ ansible_user }}/.litecoin
 rpc_whitelist: 0.0.0.0/0
 rpc_password: passwd11
