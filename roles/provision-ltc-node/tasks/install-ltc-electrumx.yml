@@ -1,9 +1,20 @@
 ---
 
+- name: "create user electrumx"
+  user:
+    name: electrumx
+    shell: /bin/bash
+    groups: sudo
+    create_home: no
+
 - name: "create folders electrumX"
   file:
     path: "{{ item }}"
     state: directory
+    owner: root
+    group: root
+    mode: '0775'
+    recurse: yes 
   loop:
     - "{{ folder_electrumx }}"
     - "{{ folder_electrumx }}db"
@@ -16,14 +27,17 @@
 
 - name: "git pull repo electrumX"
   git:
-    repo: "https://github.com/kyuupichan/electrumx.git"
+    #repo: "https://github.com/kyuupichan/electrumx.git"
+    repo: "https://github.com/spesmilo/electrumx.git"
     dest: "{{ folder_electrumx }}"
-
-- name: "create python virtualenv in {{ folder_electrumx }}/electrumXenv"
-  pip:
-    requirements: "{{ folder_electrumx }}/requirements.txt"
-    virtualenv: "{{ folder_electrumx }}/electrumXenv"
-    virtualenv_command: /usr/bin/python3 -m venv
+    force: yes
+  become_user: electrumx
+    
+#- name: "create python virtualenv in {{ folder_electrumx }}/electrumXenv"
+  #pip:
+    #requirements: "{{ folder_electrumx }}/requirements.txt"
+    #virtualenv: "{{ folder_electrumx }}/electrumXenv"
+    #virtualenv_command: /usr/bin/python3 -m venv
 
 - name: "remove package attr/attrs"
   pip:
@@ -46,12 +60,12 @@
 
 - name: "check if ssl exist"
   stat:
-    path: "/srv/electrumxcerts/cert.pem"
+    path: "{{ folder_electrumx }}certs/cert.pem"
   register: ssl_cert
   
 - name: "create ssl cert/key"
   shell: |
-    cd /srv/electrumxcerts
+    cd "{{ folder_electrumx }}"certs
     openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
       -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
   become: yes
@@ -65,7 +79,7 @@
 
 - fail:   
    msg: "script {{ folder_electrumx }}/setup.py not correctly finished, aborting!"
-  when: execute_script.stdout_lines is not search ('Finished processing dependencies for electrumX')
+  when: execute_script.stdout_lines is not search ('Finished processing dependencies')
 
 - name: "copy electrumx.conf to /etc/electrum/electrumx.conf"
   template:
@@ -91,47 +105,52 @@
    msg: "service electrumx is not started, check ur conf file: /etc/electrumx/electrumx.conf"
   when: electrumx_status.stdout == "failed"
 
-- name: "copy {{ folder_electrumx }}/contrib/daemontools/* to /src/electrumxscript/electrumxscript/electrumx"
-  shell: "cp -R {{ folder_electrumx }}/contrib/daemontools/* /srv/electrumxscripts/electrumx/"
+- name: "copy {{ folder_electrumx }}/contrib/daemontools/* to {{ folder_electrumx }}script/electrumxscript/electrumx"
+  shell: "cp -R {{ folder_electrumx }}/contrib/daemontools/* {{ folder_electrumx }}scripts/electrumx/"
 
-- name: "replace USERNAME ENV files /srv/electrumxscripts/electrumx/env/USERNAME with good values"
+- name: "replace USERNAME ENV files {{ folder_electrumx }}scripts/electrumx/env/USERNAME with good values"
   template:
     src: USERNAME_dont_touch
-    dest: "/srv/electrumxscripts/electrumx/env/USERNAME"
+    dest: "{{ folder_electrumx }}scripts/electrumx/env/USERNAME"
 
-- name: "replace DAEMON_URL ENV files /srv/electrumxscripts/electrumx/env/DAEMON_URL with good values"
+- name: "replace DAEMON_URL ENV files {{ folder_electrumx }}scripts/electrumx/env/DAEMON_URL with good values"
   template:
     src: DAEMON_URL_dont_touch
-    dest: "/srv/electrumxscripts/electrumx/env/DAEMON_URL"
+    dest: "{{ folder_electrumx }}scripts/electrumx/env/DAEMON_URL"
 
-- name: "replace DB_DIRECTORY ENV files /srv/electrumxscripts/electrumx/env/DB_DIRECTORY with good values"
+- name: "replace DB_DIRECTORY ENV files {{ folder_electrumx }}scripts/electrumx/env/DB_DIRECTORY with good values"
   template:
     src: DB_DIRECTORY_dont_touch
-    dest: "/srv/electrumxscripts/electrumx/env/DB_DIRECTORY"
+    dest: "{{ folder_electrumx }}scripts/electrumx/env/DB_DIRECTORY"
 
-- name: "replace ELECTRUMX ENV files /srv/electrumxscripts/electrumx/env/ELECTRUMX with good values"
+- name: "replace ELECTRUMX ENV files {{ folder_electrumx }}scripts/electrumx/env/ELECTRUMX with good values"
   template:
     src: ELECTRUMX_dont_touch
-    dest: "/srv/electrumxscripts/electrumx/env/ELECTRUMX"
+    dest: "{{ folder_electrumx }}scripts/electrumx/env/ELECTRUMX"
 
-- name: "replace COIN ENV files /srv/electrumxscripts/electrumx/env/COIN with good values"
+- name: "replace COIN ENV files {{ folder_electrumx }}scripts/electrumx/env/COIN with good values"
   template:
     src: COIN_dont_touch
-    dest: "/srv/electrumxscripts/electrumx/env/COIN"
+    dest: "{{ folder_electrumx }}scripts/electrumx/env/COIN"
 
-- name: "replace LOG_RUN ENV files /srv/electrumxscripts/electrumx/log/run with good values"
+- name: "replace NET ENV files {{ folder_electrumx }}scripts/electrumx/env/COIN with good values"
+  template:
+    src: NET_dont_touch
+    dest: "{{ folder_electrumx }}scripts/electrumx/env/NET"
+
+- name: "replace LOG_RUN ENV files {{ folder_electrumx }}scripts/electrumx/log/run with good values"
   template:
     src: LOG_RUN_dont_touch
-    dest: "/srv/electrumxscripts/electrumx/log/run"
+    dest: "{{ folder_electrumx }}scripts/electrumx/log/run"
 
-- name: "create symlink /srv/electrumxscripts/electrumx to /srv/electrumxservice/"
+- name: "create symlink {{ folder_electrumx }}scripts/electrumx to {{ folder_electrumx }}services/"
   file:
-    src: /srv/electrumxscripts/electrumx
-    dest:  /srv/electrumxservice/electrumx
+    src: "{{ folder_electrumx }}scripts/electrumx"
+    dest: "{{ folder_electrumx }}service/electrumx"
     state: link
 
 - name: "start svscan and get the process pid"
-  shell: "cd /srv/electrumxservice/ && svscan & disown"
+  shell: "cd {{ folder_electrumx }}service/ && svscan & disown"
   args:  
     executable: /bin/bash
   register: svscan_cmd
