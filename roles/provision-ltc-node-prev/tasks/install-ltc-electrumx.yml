@@ -1,0 +1,135 @@
+---
+
+- name: Make sure electrum root_dir exist
+  ansible.builtin.file:
+    path: "{{ root_dir }}/.electrumx"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Make sure data_dir exist
+  ansible.builtin.file:
+    path: "{{ electrum_data_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Make sure conf_dir exist
+  ansible.builtin.file:
+    path: "{{ electrum_conf_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Make sure certs_dir exist
+  ansible.builtin.file:
+    path: "{{ electrum_cert_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0775"
+
+- name: Check if ssl cert/key exist
+  stat:
+    path: "{{ electrum_cert_path }}/cert.pem"
+  register: ssl_cert
+  
+- name: Create ssl cert/key
+  shell: |
+    cd {{ electrum_cert_path }}
+    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
+      -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
+  become: yes
+  when: not ssl_cert.stat.exists
+
+- name: Remove default nginx.conf
+  ansible.builtin.file:
+    path: /etc/nginx/nginx.conf
+    state: absent
+  become: yes
+
+- name: Configure nginx.conf
+  ansible.builtin.template:
+    src: nginx-config.j2
+    dest: "/etc/nginx/nginx.conf"
+    owner: root
+    group: root
+    remote_src: no
+  become: yes
+
+- name: Cleanup existing files/folders
+  ansible.builtin.file:
+    path: "{{ root_dir }}/electrumx"
+    state: absent
+
+- name: Clone electrumx repo
+  ansible.builtin.git:
+    repo: "https://github.com/spesmilo/electrumx.git"
+    dest: "{{ root_dir }}/electrumx"
+    version: 1.16.0
+    clone: yes
+    update: yes
+    force: yes
+
+- name: Install LevelDB
+  pip:
+    name: plyvel
+
+- name: Install via setup.py
+  shell: cd electrumx; python3 setup.py install
+
+- name: Configure systemd
+  ansible.builtin.template:
+    src: electrumx-systemd-config.j2
+    dest: /etc/systemd/system/electrumx.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure electrumx-config
+  ansible.builtin.template:
+    src: electrumx-config.j2
+    dest: "{{ electrum_conf_path }}/electrumx.conf"
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/electrumx.service
+    dest: /etc/systemd/system/multi-user.target.wants/electrumx.service
+    owner: root
+    group: root
+    state: link
+
+- name: Run electrumx service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: electrumx.service
+
+- name: Remove default torrc
+  ansible.builtin.file:
+    path: /etc/tor/torrc
+    state: absent
+  become: yes
+
+- name: Configure torrc
+  ansible.builtin.template:
+    src: tor-config.j2
+    dest: "/etc/tor/torrc"
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Run tor service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: tor.service
+
+- name: Check Tor Address
+  shell: cat /var/lib/tor/electrumx_hidden_service/hostname

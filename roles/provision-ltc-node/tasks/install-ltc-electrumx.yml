@@ -1,135 +1,123 @@
 ---
 
-- name: Make sure electrum root_dir exist
-  ansible.builtin.file:
-    path: "{{ root_dir }}/.electrumx"
+- name: "create folders electrumX"
+  file:
+    path: "{{ item }}"
     state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0775"
+  loop:
+    - "{{ folder_electrumx }}"
+    - "{{ folder_electrumx }}db"
+    - "{{ folder_electrumx }}service"
+    - "{{ folder_electrumx }}scripts"
+    - "{{ folder_electrumx }}scripts/electrumx"
+    - "{{ folder_electrumx }}logs"
+    - /etc/electrumx
 
-- name: Make sure data_dir exist
-  ansible.builtin.file:
-    path: "{{ electrum_data_path }}"
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0775"
+- name: "git pull repo electrumX"
+  git:
+    repo: "https://github.com/kyuupichan/electrumx.git"
+    dest: "{{ folder_electrumx }}"
 
-- name: Make sure conf_dir exist
-  ansible.builtin.file:
-    path: "{{ electrum_conf_path }}"
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "0775"
-
-- name: Make sure certs_dir exist
-  ansible.builtin.file:
-    path: "{{ electrum_cert_path }}"
-    state: directory
-    owner: root
-    group: root
-    mode: "0775"
-
-- name: Check if ssl cert/key exist
-  stat:
-    path: "{{ electrum_cert_path }}/cert.pem"
-  register: ssl_cert
-  
-- name: Create ssl cert/key
-  shell: |
-    cd {{ electrum_cert_path }}
-    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
-      -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
-  become: yes
-  when: not ssl_cert.stat.exists
-
-- name: Remove default nginx.conf
-  ansible.builtin.file:
-    path: /etc/nginx/nginx.conf
-    state: absent
-  become: yes
-
-- name: Configure nginx.conf
-  ansible.builtin.template:
-    src: nginx-config.j2
-    dest: "/etc/nginx/nginx.conf"
-    owner: root
-    group: root
-    remote_src: no
-  become: yes
-
-- name: Cleanup existing files/folders
-  ansible.builtin.file:
-    path: "{{ root_dir }}/electrumx"
-    state: absent
-
-- name: Clone electrumx repo
-  ansible.builtin.git:
-    repo: "https://github.com/spesmilo/electrumx.git"
-    dest: "{{ root_dir }}/electrumx"
-    version: 1.16.0
-    clone: yes
-    update: yes
-    force: yes
-
-- name: Install LevelDB
+- name: "create python virtualenv in {{ folder_electrumx }}/electrumXenv"
   pip:
-    name: plyvel
+    requirements: "{{ folder_electrumx }}/requirements.txt"
+    virtualenv: "{{ folder_electrumx }}/electrumXenv"
+    virtualenv_command: /usr/bin/python3 -m venv
 
-- name: Install via setup.py
-  shell: cd electrumx; python3 setup.py install
+- name: "remove package attr/attrs"
+  pip:
+    name: "{{ item }}"
+    virtualenv: "{{ folder_electrumx }}/electrumXenv"
+    virtualenv_command: /usr/bin/python3 -m venv
+    state: absent
+  loop:
+    - attr
+    - attrs
 
-- name: Configure systemd
-  ansible.builtin.template:
-    src: electrumx-systemd-config.j2
+- name: "reinstall package attrs in the python virtualenv"
+  pip:
+    name: "{{ item }}"
+    virtualenv: "{{ folder_electrumx }}/electrumXenv"
+    virtualenv_command: /usr/bin/python3 -m venv
+  loop:
+    - attrs
+    - aiorpcx
+  
+- name: "execution python script"
+  shell: "cd {{ folder_electrumx }} && source electrumXenv/bin/activate && electrumXenv/bin/python3 setup.py install"
+  args:
+    executable: /bin/bash
+  register : execute_script
+
+- fail:   
+   msg: "script {{ folder_electrumx }}/setup.py not correctly finished, aborting!"
+  when: execute_script.stdout_lines is not search ('Finished processing dependencies for electrumX')
+
+- name: "copy electrumx.conf to /etc/electrum/electrumx.conf"
+  template:
+    src: electrumx.conf
+    dest: /etc/electrumx/electrumx.conf
+
+- name: "copy electrumx.service to /etc/systemd/system/electrumx.service"
+  template:
+    src: electrumx.service
     dest: /etc/systemd/system/electrumx.service
-    owner: root
-    group: root
-    remote_src: no
 
-- name: Configure electrumx-config
-  ansible.builtin.template:
-    src: electrumx-config.j2
-    dest: "{{ electrum_conf_path }}/electrumx.conf"
-    owner: root
-    group: root
-    remote_src: no
+- name: "enable service electrumx.service"
+  service: 
+    name: electrumx.service
+    enabled: yes
+    state: restarted
+ 
+- name: "get status of service electrumx.service"
+  shell: "service electrumx status | grep Active | awk '{print $2}'"
+  register: electrumx_status
 
-- name: Configure systemd (symlink)
-  ansible.builtin.file:
-    src: /etc/systemd/system/electrumx.service
-    dest: /etc/systemd/system/multi-user.target.wants/electrumx.service
-    owner: root
-    group: root
+- fail: 
+   msg: "service electrumx is not started, check ur conf file: /etc/electrumx/electrumx.conf"
+  when: electrumx_status.stdout == "failed"
+
+- name: "copy {{ folder_electrumx }}/contrib/daemontools/* to /src/electrumxscript/electrumxscript/electrumx"
+  shell: "cp -R {{ folder_electrumx }}/contrib/daemontools/* /srv/electrumxscripts/electrumx/"
+
+- name: "replace USERNAME ENV files /srv/electrumxscripts/electrumx/env/USERNAME with good values"
+  template:
+    src: USERNAME_dont_touch
+    dest: "/srv/electrumxscripts/electrumx/env/USERNAME"
+
+- name: "replace DAEMON_URL ENV files /srv/electrumxscripts/electrumx/env/DAEMON_URL with good values"
+  template:
+    src: DAEMON_URL_dont_touch
+    dest: "/srv/electrumxscripts/electrumx/env/DAEMON_URL"
+
+- name: "replace DB_DIRECTORY ENV files /srv/electrumxscripts/electrumx/env/DB_DIRECTORY with good values"
+  template:
+    src: DB_DIRECTORY_dont_touch
+    dest: "/srv/electrumxscripts/electrumx/env/DB_DIRECTORY"
+
+- name: "replace ELECTRUMX ENV files /srv/electrumxscripts/electrumx/env/ELECTRUMX with good values"
+  template:
+    src: ELECTRUMX_dont_touch
+    dest: "/srv/electrumxscripts/electrumx/env/ELECTRUMX"
+
+- name: "replace LOG_RUN ENV files /srv/electrumxscripts/electrumx/log/run with good values"
+  template:
+    src: LOG_RUN_dont_touch
+    dest: "/srv/electrumxscripts/electrumx/log/run"
+
+- name: "create symlink /srv/electrumxscripts/electrumx to /srv/electrumxservice/"
+  file:
+    src: /srv/electrumxscripts/electrumx
+    dest:  /srv/electrumxservice/electrumx
     state: link
 
-- name: Run electrumx service
-  ansible.builtin.systemd:
-    state: restarted
-    daemon_reload: yes
-    name: electrumx.service
+- name: "start svscan and get the process pid"
+  shell: "cd /srv/electrumxservice/ && svscan & disown"
+  args:  
+    executable: /bin/bash
+  register: svscan_cmd
 
-- name: Remove default torrc
-  ansible.builtin.file:
-    path: /etc/tor/torrc
-    state: absent
-  become: yes
+- name: debug
+  debug:
+    msg: "{{ svscan_cmd }}"
 
-- name: Configure torrc
-  ansible.builtin.template:
-    src: tor-config.j2
-    dest: "/etc/tor/torrc"
-    owner: root
-    group: root
-    remote_src: no
-
-- name: Run tor service
-  ansible.builtin.systemd:
-    state: restarted
-    daemon_reload: yes
-    name: tor.service
-
-- name: Check Tor Address
-  shell: cat /var/lib/tor/electrumx_hidden_service/hostname

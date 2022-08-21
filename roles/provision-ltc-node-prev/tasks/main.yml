@@ -1,0 +1,34 @@
+---
+
+- name: Install Dependency
+  include_tasks: 
+    file: install-ltc-electrumx-dep.yml
+    apply:
+      tags: 
+        - never
+        - install-ltc-electrumx-dep
+  tags:
+    - never 
+    - install-ltc-electrumx-dep
+
+- name: Install LTC core
+  include_tasks: 
+    file: install-ltc-core.yml
+    apply:
+      tags: 
+        - never
+        - install-ltc-core
+  tags:
+    - never 
+    - install-ltc-core
+
+- name: Install Electrumx
+  include_tasks: 
+    file: install-ltc-electrumx.yml
+    apply:
+      tags: 
+        - never
+        - install-ltc-electrumx
+  tags:
+    - never 
+    - install-ltc-electrumx

@@ -1,0 +1,57 @@
+---
+
+- name: Download Litcoin Core
+  ansible.builtin.get_url:
+    url: https://download.litecoin.org/{{ litecoin_core_version }}/linux/{{ litecoin_core_version }}-x86_64-linux-gnu.tar.gz
+    dest: /tmp/
+    checksum: "{{ litecoin_version_shasum }}"
+
+- name: Extract the tar.gz file
+  ansible.builtin.unarchive:
+    src: /tmp/{{ litecoin_core_version }}-x86_64-linux-gnu.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Install binary and files
+  shell: cd /tmp/; install -m 0755 -o root -g root -t /usr/local/bin {{ litecoin_core_version }}/bin/*
+  become: yes
+
+- name: Make sure data_dir exist
+  ansible.builtin.file:
+    path: "{{ litecoin_data_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0775"
+
+- name: Configure systemd
+  ansible.builtin.template:
+    src: ltc-systemd-config.j2
+    dest: /etc/systemd/system/ltccore.service
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure btc-config
+  ansible.builtin.template:
+    src: ltc-config.j2
+    dest: "{{ litecoin_data_path }}/litecoin.conf"
+    owner: root
+    group: root
+    remote_src: no
+
+- name: Configure systemd (symlink)
+  ansible.builtin.file:
+    src: /etc/systemd/system/ltccore.service
+    dest: /etc/systemd/system/multi-user.target.wants/ltccore.service
+    owner: root
+    group: root
+    state: link
+
+- name: Run ltccore service
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: yes
+    name: ltccore.service
+  async: 60
+  poll: 0
