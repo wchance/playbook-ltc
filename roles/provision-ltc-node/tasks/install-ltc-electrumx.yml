@@ -43,6 +43,19 @@
   loop:
     - attrs
     - aiorpcx
+
+- name: "check if ssl exist"
+  stat:
+    path: "/srv/electrumxcerts/cert.pem"
+  register: ssl_cert
+  
+- name: "create ssl cert/key"
+  shell: |
+    cd /srv/electrumxcerts
+    openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 \
+      -days 999 -nodes -subj "/C=US/ST=Florida/L=Stockholm/O=.../OU=.../CN=.../emailAddress=..."
+  become: yes
+  when: not ssl_cert.stat.exists
   
 - name: "execution python script"
   shell: "cd {{ folder_electrumx }} && source electrumXenv/bin/activate && electrumXenv/bin/python3 setup.py install"
@@ -101,6 +114,11 @@
     src: ELECTRUMX_dont_touch
     dest: "/srv/electrumxscripts/electrumx/env/ELECTRUMX"
 
+- name: "replace COIN ENV files /srv/electrumxscripts/electrumx/env/COIN with good values"
+  template:
+    src: COIN_dont_touch
+    dest: "/srv/electrumxscripts/electrumx/env/COIN"
+
 - name: "replace LOG_RUN ENV files /srv/electrumxscripts/electrumx/log/run with good values"
   template:
     src: LOG_RUN_dont_touch
@@ -117,4 +135,3 @@
   args:  
     executable: /bin/bash
   register: svscan_cmd
-
