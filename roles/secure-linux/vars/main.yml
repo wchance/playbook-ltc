@@ -1,4 +1,0 @@
----
-
-archive_keyring: /usr/share/keyrings/teleport-archive-keyring.asc
-teleportlist_route: /etc/apt/sources.list.d/teleport.list

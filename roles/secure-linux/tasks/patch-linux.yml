@@ -1,4 +1,0 @@
-- name: Perform full patching
-  package:
-    name: '*'
-    state: latest

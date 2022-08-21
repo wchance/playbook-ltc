@@ -5,14 +5,4 @@
   become: true
   roles:
     - role: adhoc-cmd
-    - role: provision-btc-node
     - role: provision-ltc-node
-    - role: provision-bch-node
-    - role: provision-eth-node
-    - role: provision-matic-node
-    - role: provision-avax-node
-    - role: provision-ada-node
-    - role: provision-gateway-node
-    - role: provision-monitoring-node
-    - role: provision-teleport
-    - role: secure-linux

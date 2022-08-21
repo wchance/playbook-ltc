@@ -1,3 +1,0 @@
-golang_version: 1.17
-avalanchego_branch: master
-root_dir: /home/{{ ansible_user }}
