@@ -1,0 +1,2 @@
+#!/bin/sh
+exec multilog s500000 n10 {{ folder_electrumx }}logs/

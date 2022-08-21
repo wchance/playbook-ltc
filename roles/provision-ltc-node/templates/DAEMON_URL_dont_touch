@@ -1,0 +1,1 @@
+http://{{ username_electrumx }}:{{ password_electrumx }}@{{ hostname_electrumx }}:{{ port_electrumx }}/
