@@ -11,6 +11,7 @@
     - "{{ folder_electrumx }}scripts"
     - "{{ folder_electrumx }}scripts/electrumx"
     - "{{ folder_electrumx }}logs"
+    - "{{ folder_electrumx }}certs"
     - /etc/electrumx
 
 - name: "git pull repo electrumX"
@@ -116,8 +117,4 @@
   args:  
     executable: /bin/bash
   register: svscan_cmd
-
-- name: debug
-  debug:
-    msg: "{{ svscan_cmd }}"
 
