@@ -1,5 +1,6 @@
 ---
 
+## OLD CONF
 ltc_node_ip: 
 litecoin_core_version: litecoin-0.18.1
 litecoin_version_shasum: sha256:ca50936299e2c5a66b954c266dcaaeef9e91b2f5307069b9894048acf3eb5751
@@ -11,9 +12,11 @@ litecoin_rpc_url: http://{{ rpc_user }}:{{ rpc_password }}@{{ ltc_node_ip }}:{{ 
 electrum_data_path: "{{ root_dir }}/.electrumx/db"
 electrum_conf_path: "{{ root_dir }}/.electrumx/conf"
 electrum_cert_path: "{{ root_dir }}/.electrumx/certs"
+
+
+## NEW CONF
 username_electrumx: "wchance"
 password_electrumx: "password11!"
-hostname_electrumx: "10.1.41.23"
+hostname_electrumx: "10.1.41.22"
 port_electrumx: "9332"
 folder_electrumx: "/srv/electrumx"
-
