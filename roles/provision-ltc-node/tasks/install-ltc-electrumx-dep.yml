@@ -16,6 +16,7 @@
     - pip
     - virtualenv
     - daemontools
+    - git
 
 - name: "use module pip for install python librairy"
   pip:
