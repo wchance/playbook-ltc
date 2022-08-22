@@ -109,4 +109,4 @@
     daemon_reload: yes
     name: electrumx.service
   become: yes
-  become_user: {{ ansible_user }}
+  become_user: "{{ ansible_user }}"
