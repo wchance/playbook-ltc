@@ -98,10 +98,10 @@
     
 - name: Change file ownership, group and permissions
   file:
-    path: /home/wchance/electrumx/
+    path: /home/wchance/
     owner: electrumx
     group: electrumx
-    mode: '0775'
+    mode: '0777'
     recurse: yes
 
 - name: "enable service electrumx.service"
