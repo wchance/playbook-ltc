@@ -1,1 +1,1 @@
-{{ folder_electrumx }}db
+{{ root_dir }}/.electrumx/db
