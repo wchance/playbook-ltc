@@ -32,8 +32,6 @@
     repo: "https://github.com/spesmilo/electrumx.git"
     dest: "{{ folder_electrumx }}"
     force: yes
-  become: yes
-  become_user: wchance
     
 - name: "copy requirements.txt to {{ folder_electrumx }}script/electrumx/"
   template:
