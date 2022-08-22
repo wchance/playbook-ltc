@@ -6,7 +6,6 @@ litecoin_version_shasum: sha256:ca50936299e2c5a66b954c266dcaaeef9e91b2f5307069b9
 litecoin_data_path: /home/{{ ansible_user }}/.litecoin
 rpc_whitelist: 0.0.0.0/0
 rpc_port: 9332
-root_dir: /home/{{ ansible_user }}
 litecoin_rpc_url: http://{{ rpc_user }}:{{ rpc_password }}@{{ ltc_node_ip }}:{{ rpc_port }}
 electrum_data_path: "{{ root_dir }}/.electrumx/db"
 electrum_conf_path: "{{ root_dir }}/.electrumx/conf"
@@ -15,4 +14,6 @@ username_electrumx: "wchance"
 password_electrumx: "password11!"
 hostname_electrumx: "10.1.41.22"
 port_electrumx: "9332"
-folder_electrumx: "/home/wchance/electrumx/electrumx"
+root_dir: "/home/{{ ansible_user }}"
+ansible_user: root
+folder_electrumx: "{{ root_dir }}/electrumx"
