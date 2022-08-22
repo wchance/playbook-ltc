@@ -4,10 +4,11 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/electrumx/electrumx.conf
-ExecStart={{ folder_electrumx}}/electrumx_server
-User=electrumx
+ExecStart=/usr/local/bin/electrumx_server
+User=root
 LimitNOFILE=8192
-TimeoutStopSec=10min
+TimeoutStopSec=30min
 
 [Install]
 WantedBy=multi-user.target
+Alias=electrumx.service
