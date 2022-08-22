@@ -1,41 +1,35 @@
 ---
 
-- hosts: all
-  gather_facts: yes
+- name: "install dependencies for electrumX starting"
+  debug:
+    msg: "START!"
 
-  tasks:
+- name: "install packages - wait few minutes"
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - python3
+    - python3-venv
+    - python3-aiohttp
+    - pip
+    - virtualenv
+    - daemontools
 
-  - name: "install dependencies for electrumX starting"
-    debug:
-      msg: "START!"
+- name: "use module pip for install python librairy"
+  pip:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - pylru
+    - plyvel
+    - aiorpcx
 
-  - name: "install packages - wait few minutes"
-    apt:
-      name: "{{ item }}"
-      state: present
-      update_cache: yes
-    loop:
-      - python3
-      - python3-venv
-      - python3-aiohttp
-      - pip
-      - virtualenv
-      - daemontools
-      - git
+- name: "check if plyvel correctly installed"
+  shell: python3 -c 'import plyvel'
+  register: check_plyvel_status
 
-  - name: "use module pip for install python librairy"
-    pip:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - pylru
-      - plyvel
-      - aiorpcx
-
-  - name: "check if plyvel correctly installed"
-    shell: python3 -c 'import plyvel'
-    register: check_plyvel_status
-
-  - fail:
-     msg: "problem with installation plyvel"
-    when: check_plyvel_status.stdout != ""
+- fail:
+   msg: "problem with installation plyvel"
+  when: check_plyvel_status.stdout != ""
