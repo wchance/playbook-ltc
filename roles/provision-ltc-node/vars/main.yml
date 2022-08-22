@@ -15,5 +15,5 @@ password_electrumx: "password11!"
 hostname_electrumx: "10.1.41.22"
 port_electrumx: "9332"
 root_dir: "/home/{{ ansible_user }}"
-ansible_user: root
+#ansible_user: 
 folder_electrumx: "{{ root_dir }}/electrumx"
