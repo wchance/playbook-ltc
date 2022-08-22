@@ -5,7 +5,7 @@ After=network.target
 [Service]
 EnvironmentFile=/etc/electrumx/electrumx.conf
 ExecStart=/usr/local/bin/electrumx_server
-User=root
+User={{ ansible_user }}
 LimitNOFILE=8192
 TimeoutStopSec=30min
 
