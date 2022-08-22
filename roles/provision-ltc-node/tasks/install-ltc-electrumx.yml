@@ -95,6 +95,14 @@
   template:
     src: electrumx.service
     dest: /etc/systemd/system/electrumx.service
+    
+- name: Change file ownership, group and permissions
+  file:
+    path: /home/wchance/electrumx/
+    owner: electrumx
+    group: electrumx
+    mode: '0775'
+    recurse: yes
 
 - name: "enable service electrumx.service"
   service: 
@@ -102,7 +110,7 @@
     enabled: yes
     state: restarted
   become: yes
-  become_user: root
+  become_user: electrumx
 
 - name: "get status of service electrumx.service"
   shell: "service electrumx status | grep Active | awk '{print $2}'"
