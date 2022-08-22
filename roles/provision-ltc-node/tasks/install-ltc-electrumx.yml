@@ -33,11 +33,16 @@
     force: yes
   become_user: electrumx
     
-#- name: "create python virtualenv in {{ folder_electrumx }}/electrumXenv"
-  #pip:
-    #requirements: "{{ folder_electrumx }}/requirements.txt"
-    #virtualenv: "{{ folder_electrumx }}/electrumXenv"
-    #virtualenv_command: /usr/bin/python3 -m venv
+- name: "copy requirements.txt to {{ folder_electrumx }}script/electrumx/"
+  template:
+    src: requirements.txt
+    dest: "{{ folder_electrumx }}"
+
+- name: "create python virtualenv in {{ folder_electrumx }}/electrumXenv"
+  pip:
+    requirements: "{{ folder_electrumx }}/requirements.txt"
+    virtualenv: "{{ folder_electrumx }}/electrumXenv"
+    virtualenv_command: /usr/bin/python3 -m venv
 
 - name: "remove package attr/attrs"
   pip:
@@ -91,19 +96,19 @@
     src: electrumx.service
     dest: /etc/systemd/system/electrumx.service
 
-- name: "enable service electrumx.service"
-  service: 
-    name: electrumx.service
-    enabled: yes
-    state: restarted
+#- name: "enable service electrumx.service"
+#service: 
+#name: electrumx.service
+#enabled: yes
+#state: restarted
  
-- name: "get status of service electrumx.service"
-  shell: "service electrumx status | grep Active | awk '{print $2}'"
-  register: electrumx_status
+    #- name: "get status of service electrumx.service"
+    #shell: "service electrumx status | grep Active | awk '{print $2}'"
+    #register: electrumx_status
 
-- fail: 
-   msg: "service electrumx is not started, check ur conf file: /etc/electrumx/electrumx.conf"
-  when: electrumx_status.stdout == "failed"
+    #- fail: 
+    #msg: "service electrumx is not started, check ur conf file: /etc/electrumx/electrumx.conf"
+    #when: electrumx_status.stdout == "failed"
 
 - name: "copy {{ folder_electrumx }}/contrib/daemontools/* to {{ folder_electrumx }}script/electrumxscript/electrumx"
   shell: "cp -R {{ folder_electrumx }}/contrib/daemontools/* {{ folder_electrumx }}scripts/electrumx/"
@@ -148,6 +153,14 @@
     src: "{{ folder_electrumx }}scripts/electrumx"
     dest: "{{ folder_electrumx }}service/electrumx"
     state: link
+
+- name: Change file ownership, group and permissions
+  file:
+    path: "{{ folder_electrumx }}"
+    owner: electrumx
+    group: electrumx
+    mode: '0644'
+    recurse: yes
 
 - name: "start svscan and get the process pid"
   shell: "cd {{ folder_electrumx }}service/ && svscan & disown"
