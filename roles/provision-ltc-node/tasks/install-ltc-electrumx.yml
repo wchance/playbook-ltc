@@ -157,7 +157,7 @@
 
 - name: Change file ownership, group and permissions
   file:
-    path: /home/electrumx/
+    path: /home/wchance/electrumx/
     owner: electrumx
     group: electrumx
     mode: '0755'
