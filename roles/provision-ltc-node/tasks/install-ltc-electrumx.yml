@@ -102,7 +102,7 @@
     enabled: yes
     state: restarted
   become: yes
-  become_user: electrumx
+  become_user: root
 
 - name: "get status of service electrumx.service"
   shell: "service electrumx status | grep Active | awk '{print $2}'"
